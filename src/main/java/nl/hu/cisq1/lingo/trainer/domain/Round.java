@@ -4,10 +4,10 @@ import java.util.List;
 
 public class Round {
     private String wordToGuess;
-    private List<String> attempts;
+    private int attempts;
     private Feedback feedback;
 
-    public Round(String wordToGuess, List<String> attempts) {
+    public Round(String wordToGuess, int attempts) {
         this.wordToGuess = wordToGuess;
         this.attempts = attempts;
     }
@@ -20,11 +20,11 @@ public class Round {
         this.wordToGuess = wordToGuess;
     }
 
-    public List<String> getAttempts() {
+    public int getAttempts() {
         return attempts;
     }
 
-    public void setAttempts(List<String> attempts) {
+    public void setAttempts(int attempts) {
         this.attempts = attempts;
     }
 }
