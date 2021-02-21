@@ -16,28 +16,29 @@ public class Feedback {
         this.marks = marks;
     }
 
-    public String getAttempt() {
-        return attempt;
-    }
-
-    public void setAttempt(String attempt) {
-        this.attempt = attempt;
-    }
-
-    public List<Mark> getMarks() {
-        return marks;
-    }
-
-    public void setMarks(List<Mark> marks) {
-        this.marks = marks;
-    }
-
     public boolean isWordGuessed() {
         return this.marks.stream().allMatch(mark -> mark == Mark.CORRECT);
     }
 
     public boolean guessIsValid() {
         return this.attempt.length() == this.marks.size();
+    }
+
+    public String giveHint() {
+        StringBuilder feedbackCharacters = new StringBuilder();
+        char[] attemptArray = this.attempt.toCharArray();
+        for (int i = 0; i < attemptArray.length; i++) {
+            if (this.marks.get(i).equals(Mark.CORRECT)) {
+                feedbackCharacters.append(attemptArray[i]);
+            }
+            else if (this.marks.get(i).equals(Mark.PRESENT)) {
+                //TODO: Implement this somehow
+            }
+            else {
+                feedbackCharacters.append(".".charAt(0));
+            }
+        }
+        return feedbackCharacters.toString();
     }
 
     @Override

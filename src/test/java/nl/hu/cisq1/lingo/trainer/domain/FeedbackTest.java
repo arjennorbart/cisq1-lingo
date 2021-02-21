@@ -3,8 +3,12 @@ package nl.hu.cisq1.lingo.trainer.domain;
 import nl.hu.cisq1.lingo.trainer.domain.exception.InvalidFeedbackException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -37,6 +41,22 @@ class FeedbackTest {
         assertThrows(
                 InvalidFeedbackException.class,
                 () -> new Feedback("woord", List.of(Mark.CORRECT))
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideHintExamples")
+    @DisplayName("Show all marks when the attempt is correct")
+    void provideFeedback(String wordToGuess, List<Mark> marks) {
+        Feedback feedback = new Feedback("banana", marks);
+        assertEquals(wordToGuess, feedback.giveHint());
+    }
+
+    static Stream<Arguments> provideHintExamples() {
+        return Stream.of(
+                Arguments.of("banana", List.of(Mark.CORRECT, Mark.CORRECT, Mark.CORRECT, Mark.CORRECT, Mark.CORRECT, Mark.CORRECT)),
+                Arguments.of("b.....", List.of(Mark.CORRECT, Mark.ABSENT, Mark.ABSENT, Mark.ABSENT, Mark.ABSENT, Mark.ABSENT)),
+                Arguments.of("b....a", List.of(Mark.CORRECT, Mark.ABSENT, Mark.ABSENT, Mark.ABSENT, Mark.ABSENT, Mark.CORRECT))
         );
     }
 }
