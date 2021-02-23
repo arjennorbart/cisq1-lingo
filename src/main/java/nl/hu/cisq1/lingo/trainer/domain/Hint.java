@@ -1,54 +1,26 @@
 package nl.hu.cisq1.lingo.trainer.domain;
 
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+import nl.hu.cisq1.lingo.trainer.domain.utils.Utils;
+
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
+@AllArgsConstructor
+@EqualsAndHashCode
+@ToString
 public class Hint {
-    private static final char dot = ".".charAt(0);
-    private static final char plus = "+".charAt(0);
+    private List<Character> characters;
 
-    private String previousHint;
-
-    public Hint() {
-        this.previousHint = "";
-    }
-
-    public void setPreviousHint(String previousHint) {
-        this.previousHint = previousHint;
-    }
-
-    public String giveNewHint(String attempt, List<Mark> marks) {
-        StringBuilder feedbackCharacters = new StringBuilder();
-        char[] attemptArray = attempt.toCharArray();
-        char[] previousHintArray = this.previousHint.toCharArray();
-
-        for (int i = 0; i < attemptArray.length; i++) {
-            if (marks.get(i).equals(Mark.CORRECT)) {
-                feedbackCharacters.append(attemptArray[i]);
-            }
-            else if (marks.get(i).equals(Mark.PRESENT)) {
-                feedbackCharacters.append(plus);
-            }
-            else {
-                if (!this.previousHint.isBlank() && previousHintArray[i] != dot && previousHintArray[i] != plus)
-                    feedbackCharacters.append(previousHintArray[i]);
-                else feedbackCharacters.append(dot);
-            }
+    public void replaceHint(List<Character> newCharacters) {
+        List<Character> replacementList = new ArrayList<>();
+        for (int i = 0; i < this.characters.size(); i++) {
+            if(this.characters.get(i).equals(Utils.dot()) || this.characters.get(i).equals(Utils.plus()))
+                replacementList.add(newCharacters.get(i));
+            else replacementList.add(this.characters.get(i));
         }
-        this.previousHint = feedbackCharacters.toString();
-        return this.previousHint;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Hint hint = (Hint) o;
-        return Objects.equals(previousHint, hint.previousHint);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(previousHint);
+        this.characters = replacementList;
     }
 }

@@ -31,8 +31,9 @@ class FeedbackTest {
     @Test
     @DisplayName("guess is valid if it contains the right amount of characters")
     void guessIsValid() {
-        Feedback feedback = new Feedback("woord", List.of(Mark.PRESENT, Mark.CORRECT, Mark.CORRECT, Mark.CORRECT, Mark.CORRECT));
-        assertTrue(feedback.guessIsValid());
+        assertDoesNotThrow(
+                () -> new Feedback("woord", List.of(Mark.PRESENT, Mark.CORRECT, Mark.CORRECT, Mark.CORRECT, Mark.CORRECT))
+        );
     }
 
     @Test
@@ -47,26 +48,36 @@ class FeedbackTest {
     @ParameterizedTest
     @MethodSource("provideHintExamples")
     @DisplayName("Show all marks when the attempt is correct")
-    void provideFeedback(String wordToGuess, List<Mark> marks) {
+    void provideFeedback(String wordToGuess, List<Mark> marks, Hint previousHint, Hint newHint) {
         Feedback feedback = new Feedback("banana", marks);
-        assertEquals(wordToGuess, feedback.giveHint());
+        assertEquals(newHint, feedback.giveHint(previousHint, wordToGuess));
     }
 
     static Stream<Arguments> provideHintExamples() {
         return Stream.of(
-                Arguments.of("banana", List.of(Mark.CORRECT, Mark.CORRECT, Mark.CORRECT, Mark.CORRECT, Mark.CORRECT, Mark.CORRECT)),
-                Arguments.of("b.....", List.of(Mark.CORRECT, Mark.ABSENT, Mark.ABSENT, Mark.ABSENT, Mark.ABSENT, Mark.ABSENT)),
-                Arguments.of("b.+..a", List.of(Mark.CORRECT, Mark.ABSENT, Mark.PRESENT, Mark.ABSENT, Mark.ABSENT, Mark.CORRECT)),
-                Arguments.of("b.++.a", List.of(Mark.CORRECT, Mark.ABSENT, Mark.PRESENT, Mark.PRESENT, Mark.ABSENT, Mark.CORRECT)),
-                Arguments.of("b....a", List.of(Mark.CORRECT, Mark.ABSENT, Mark.ABSENT, Mark.ABSENT, Mark.ABSENT, Mark.CORRECT))
+                Arguments.of("banana", List.of(Mark.CORRECT, Mark.CORRECT, Mark.CORRECT, Mark.CORRECT, Mark.CORRECT, Mark.CORRECT),
+                        new Hint(List.of('.', '.', '.', '.', '.', '.')),
+                        new Hint(List.of('b', 'a', 'n', 'a', 'n', 'a'))),
+                Arguments.of("banana", List.of(Mark.CORRECT, Mark.ABSENT, Mark.ABSENT, Mark.ABSENT, Mark.ABSENT, Mark.ABSENT),
+                        new Hint(List.of('.', '.', '.', '.', '.', '.')),
+                        new Hint(List.of('b', '.', '.', '.', '.', '.'))),
+                Arguments.of("banana", List.of(Mark.CORRECT, Mark.ABSENT, Mark.PRESENT, Mark.ABSENT, Mark.ABSENT, Mark.CORRECT),
+                        new Hint(List.of('.', '.', '.', '.', '.', '.')),
+                        new Hint(List.of('b', '.', '+', '.', '.', 'a'))),
+                Arguments.of("banana", List.of(Mark.CORRECT, Mark.ABSENT, Mark.PRESENT, Mark.PRESENT, Mark.ABSENT, Mark.CORRECT),
+                        new Hint(List.of('.', '.', '.', '.', '.', '.')),
+                        new Hint(List.of('b', '.', '+', '+', '.', 'a'))),
+                Arguments.of("banana", List.of(Mark.CORRECT, Mark.ABSENT, Mark.ABSENT, Mark.ABSENT, Mark.ABSENT, Mark.CORRECT),
+                        new Hint(List.of('.', '.', '.', '.', '.', '.')),
+                        new Hint(List.of('b', '.', '.', '.', '.', 'a'))),
+                Arguments.of("banana", List.of(Mark.CORRECT, Mark.ABSENT, Mark.ABSENT, Mark.ABSENT, Mark.ABSENT, Mark.ABSENT),
+                        new Hint(List.of('.', '.', '.', '.', '.', 'a')),
+                        new Hint(List.of('b', '.', '.', '.', '.', 'a'))),
+                Arguments.of("banaan", List.of(Mark.ABSENT, Mark.CORRECT, Mark.CORRECT, Mark.CORRECT, Mark.CORRECT, Mark.ABSENT),
+                        //previous hint is "katoen"
+                        new Hint(List.of('.', 'a', '.', '.', '.', 'n')),
+                        //if the attempt is "kanaal" the feedback should be ".anaan" and not ".anaa."
+                        new Hint(List.of('.', 'a', 'n', 'a', 'a', 'n')))
         );
-    }
-
-    @Test
-    @DisplayName("Add previous hint to the new hint. should add the final a of banana")
-    void provideFeedbackWithPreviousHint() {
-        Feedback feedback = new Feedback("banana", List.of(Mark.CORRECT, Mark.ABSENT, Mark.CORRECT, Mark.CORRECT, Mark.ABSENT, Mark.ABSENT));
-        feedback.getHint().setPreviousHint("b....a");
-        assertEquals("b.na.a", feedback.giveHint());
     }
 }
