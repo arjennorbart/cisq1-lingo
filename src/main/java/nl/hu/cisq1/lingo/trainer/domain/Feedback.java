@@ -8,12 +8,18 @@ import java.util.Objects;
 public class Feedback {
     private String attempt;
     private List<Mark> marks;
+    private Hint hint;
 
     public Feedback(String attempt, List<Mark> marks) {
         if (attempt.length() != marks.size())
             throw new InvalidFeedbackException("Invalid length");
         this.attempt = attempt;
         this.marks = marks;
+        this.hint = new Hint();
+    }
+
+    public Hint getHint() {
+        return hint;
     }
 
     public boolean isWordGuessed() {
@@ -25,20 +31,7 @@ public class Feedback {
     }
 
     public String giveHint() {
-        StringBuilder feedbackCharacters = new StringBuilder();
-        char[] attemptArray = this.attempt.toCharArray();
-        for (int i = 0; i < attemptArray.length; i++) {
-            if (this.marks.get(i).equals(Mark.CORRECT)) {
-                feedbackCharacters.append(attemptArray[i]);
-            }
-            else if (this.marks.get(i).equals(Mark.PRESENT)) {
-                //TODO: Implement this somehow
-            }
-            else {
-                feedbackCharacters.append(".".charAt(0));
-            }
-        }
-        return feedbackCharacters.toString();
+        return this.hint.giveNewHint(this.attempt, this.marks);
     }
 
     @Override

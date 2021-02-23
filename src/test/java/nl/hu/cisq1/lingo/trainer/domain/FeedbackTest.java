@@ -56,7 +56,17 @@ class FeedbackTest {
         return Stream.of(
                 Arguments.of("banana", List.of(Mark.CORRECT, Mark.CORRECT, Mark.CORRECT, Mark.CORRECT, Mark.CORRECT, Mark.CORRECT)),
                 Arguments.of("b.....", List.of(Mark.CORRECT, Mark.ABSENT, Mark.ABSENT, Mark.ABSENT, Mark.ABSENT, Mark.ABSENT)),
+                Arguments.of("b.+..a", List.of(Mark.CORRECT, Mark.ABSENT, Mark.PRESENT, Mark.ABSENT, Mark.ABSENT, Mark.CORRECT)),
+                Arguments.of("b.++.a", List.of(Mark.CORRECT, Mark.ABSENT, Mark.PRESENT, Mark.PRESENT, Mark.ABSENT, Mark.CORRECT)),
                 Arguments.of("b....a", List.of(Mark.CORRECT, Mark.ABSENT, Mark.ABSENT, Mark.ABSENT, Mark.ABSENT, Mark.CORRECT))
         );
+    }
+
+    @Test
+    @DisplayName("Add previous hint to the new hint. should add the final a of banana")
+    void provideFeedbackWithPreviousHint() {
+        Feedback feedback = new Feedback("banana", List.of(Mark.CORRECT, Mark.ABSENT, Mark.CORRECT, Mark.CORRECT, Mark.ABSENT, Mark.ABSENT));
+        feedback.getHint().setPreviousHint("b....a");
+        assertEquals("b.na.a", feedback.giveHint());
     }
 }

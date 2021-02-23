@@ -5,11 +5,16 @@ import java.util.List;
 public class Round {
     private String wordToGuess;
     private int attempts;
-    private Feedback feedback;
+    private List<Feedback> feedback;
 
-    public Round(String wordToGuess, int attempts) {
+    public Round(String wordToGuess, int attempts, List<Feedback> feedback) {
         this.wordToGuess = wordToGuess;
         this.attempts = attempts;
+        this.feedback = feedback;
+    }
+
+    public String doAttempt() {
+        return "";
     }
 
     public String getWordToGuess() {
