@@ -5,13 +5,14 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import nl.hu.cisq1.lingo.trainer.domain.utils.Utils;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
 @EqualsAndHashCode
 @ToString
-public class Hint {
+public class Hint implements Serializable {
     private List<Character> characters;
 
     public void replaceHint(List<Character> newCharacters) {

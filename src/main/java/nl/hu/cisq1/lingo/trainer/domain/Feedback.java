@@ -1,16 +1,21 @@
 package nl.hu.cisq1.lingo.trainer.domain;
 
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 import nl.hu.cisq1.lingo.trainer.domain.exception.InvalidFeedbackException;
 import nl.hu.cisq1.lingo.trainer.domain.utils.Utils;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @EqualsAndHashCode
+@Getter
+@Setter
 @ToString
-public class Feedback {
+public class Feedback implements Serializable {
 
     private String attempt;
     private List<Mark> marks;
