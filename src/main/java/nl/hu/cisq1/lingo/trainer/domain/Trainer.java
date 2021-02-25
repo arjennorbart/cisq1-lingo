@@ -26,6 +26,12 @@ public class Trainer implements Serializable {
         if (this.activeRound != null)
             this.rounds.add(this.activeRound);
         this.activeRound = new Round(wordToGuess);
+        this.activeRound.provideStartingHint();
+    }
+
+    public void doAttempt(String attempt) {
+        //TODO: call wordValidator and implement more validation
+        this.activeRound.doAttempt(attempt);
     }
 
     public void isGameFinished() {

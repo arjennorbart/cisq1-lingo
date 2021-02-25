@@ -1,7 +1,6 @@
 package nl.hu.cisq1.lingo.trainer.domain;
 
 import nl.hu.cisq1.lingo.trainer.domain.exception.ReachedMaxAttemptsException;
-import nl.hu.cisq1.lingo.words.domain.Word;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -26,17 +25,19 @@ public class RoundTest {
     @DisplayName("provide starting feedback should show the first letter")
     void provideStartingHintTest() {
         Round round = new Round("banana");
-        assertEquals(new Hint(List.of('b', '.', '.', '.', '.', '.')), round.provideStartingHint());
+        round.provideStartingHint();
+        assertEquals(new Hint(List.of('b', '.', '.', '.', '.', '.')), round.getHint());
     }
 
     @Test
     @DisplayName("Should receive feedback after doing an attempt")
     void doAttemptTest() {
         Round round = new Round("banaan");
+        round.doAttempt("katoen");
         Feedback feedback = new Feedback(
                 "katoen",
                 List.of(Mark.ABSENT, Mark.CORRECT, Mark.ABSENT, Mark.ABSENT, Mark.ABSENT, Mark.CORRECT));
-        assertEquals(feedback, round.doAttempt("katoen"));
+        assertEquals(feedback, round.getFeedback().get(round.getFeedback().size() - 1));
     }
 
     @Test

@@ -2,10 +2,10 @@ package nl.hu.cisq1.lingo.trainer.application;
 
 import nl.hu.cisq1.lingo.trainer.data.TrainerData;
 import nl.hu.cisq1.lingo.trainer.data.TrainerRepository;
+import nl.hu.cisq1.lingo.trainer.domain.Hint;
 import nl.hu.cisq1.lingo.trainer.domain.Trainer;
 import nl.hu.cisq1.lingo.trainer.domain.factory.TrainerFactory;
 import nl.hu.cisq1.lingo.words.application.WordService;
-import nl.hu.cisq1.lingo.words.domain.Word;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -41,5 +41,17 @@ public class TrainerService {
         TrainerData trainerData = new TrainerData(trainer);
         this.trainerRepository.save(trainerData);
         return trainer;
+    }
+
+    public Trainer doAttempt(String attempt) {
+        TrainerData lastSavedGame = getLastSavedGame();
+        Trainer trainer = lastSavedGame.getTrainer();
+        trainer.doAttempt(attempt);
+        this.trainerRepository.save(lastSavedGame);
+        return trainer;
+    }
+
+    private TrainerData getLastSavedGame() {
+        return this.trainerRepository.findTopByOrderByIdDesc().orElseThrow();
     }
 }

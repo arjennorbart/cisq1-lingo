@@ -20,7 +20,7 @@ public class Round implements Serializable {
     private int attempts;
     private final int maxAttempts = 5;
     private List<Feedback> feedback;
-    private Hint startingHint;
+    private Hint hint;
     private Boolean wordIsGuessed;
 
     public Round(String wordToGuess) {
@@ -31,21 +31,22 @@ public class Round implements Serializable {
 
     public void maxAttemptsChecker() {
         if (this.attempts >= this.maxAttempts)
-            throw new ReachedMaxAttemptsException("Maximum of 5 attempts");
+//            throw new ReachedMaxAttemptsException("Maximum of 5 attempts");
+            System.out.println("throws exception in Round line 34 maxAttemptsChecker()");
     }
 
-    public Hint provideStartingHint() {
+    public void provideStartingHint() {
         List<Character> startingHintList = new ArrayList<>();
         char[] wordToGuessArray = wordToGuess.toCharArray();
         startingHintList.add(wordToGuessArray[0]);
         for (int i = 0; i < wordToGuessArray.length - 1; i++)
             startingHintList.add(Utils.dot());
-        this.startingHint = new Hint(startingHintList);
-        return this.startingHint;
+        this.hint = new Hint(startingHintList);
     }
 
-    public Feedback doAttempt(String attempt) {
-        //TODO: make class for generating marks from the attempt and validating
+    public void doAttempt(String attempt) {
+        //TODO: make class for generating marks from the attempt and validating.
+        // Also fix Mark.PRESENT check (if char only appears once)
         List<Mark> marks = new ArrayList<>();
         char[] wordToGuessArray = this.wordToGuess.toCharArray();
         char[] attemptArray = attempt.toCharArray();
@@ -61,6 +62,6 @@ public class Round implements Serializable {
         Feedback feedback = new Feedback(attempt, marks);
         this.feedback.add(feedback);
         this.wordIsGuessed = feedback.isWordGuessed();
-        return feedback;
+        this.hint = feedback.giveHint(hint, this.wordToGuess);
     }
 }
