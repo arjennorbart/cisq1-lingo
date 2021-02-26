@@ -6,34 +6,28 @@ class Game {
 
 class Round {
   - roundNumber: int
-}
-
-class Player {
-  - name: String
+  - attempts: int
 }
 
 class Word {
-  - letters: String
+  - value: String
   - length: int
 }
 
-class Guess {
-  - letters: String
-  - length: int
-  - feedback: Feedback
+class Feedback {
+  - guess: String
 }
 
-enum Feedback {
+enum Mark {
   CORRECT
   PRESENT
   ABSENT
   INVALID
 }
 
-Game "0..*" -- "1" Player 
 Game "1" -- "1..*" Round : has
 Round "1..*" -- "1" Word
-Round "1..*" -- "1" Guess
-
+Round "1..*" -- "1" Feedback
+Feedback -- "*" Mark : hints per letter of attempt
 
 @enduml

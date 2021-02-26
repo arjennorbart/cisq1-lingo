@@ -1,6 +1,7 @@
 package nl.hu.cisq1.lingo.words.application;
 
 import nl.hu.cisq1.lingo.words.data.SpringWordRepository;
+import nl.hu.cisq1.lingo.words.domain.exception.InvalidWordException;
 import nl.hu.cisq1.lingo.words.domain.exception.WordLengthNotSupportedException;
 import org.springframework.stereotype.Service;
 
@@ -20,5 +21,12 @@ public class WordService {
                 .findRandomWordByLength(length)
                 .orElseThrow(() -> new WordLengthNotSupportedException(length))
                 .getValue();
+    }
+
+    //Used to check if the player's attempt is an existing word.
+    public void findWordByString(String attempt) {
+        this.wordRepository
+                .findWordByValue(attempt)
+                .orElseThrow(() -> new InvalidWordException("This is not a word"));
     }
 }
