@@ -31,8 +31,7 @@ public class Round implements Serializable {
 
     public void maxAttemptsChecker() {
         if (this.attempts >= this.maxAttempts)
-//            throw new ReachedMaxAttemptsException("Maximum of 5 attempts");
-            System.out.println("throws exception in Round line 34 maxAttemptsChecker()");
+            throw new ReachedMaxAttemptsException("Maximum of 5 attempts");
     }
 
     public void provideStartingHint() {
@@ -62,6 +61,6 @@ public class Round implements Serializable {
         Feedback feedback = new Feedback(attempt, marks);
         this.feedback.add(feedback);
         this.wordIsGuessed = feedback.isWordGuessed();
-        this.hint = feedback.giveHint(hint, this.wordToGuess);
+        this.hint = feedback.giveHint(this.hint, this.wordToGuess);
     }
 }

@@ -33,7 +33,9 @@ public class RoundTest {
     @DisplayName("Should receive feedback after doing an attempt")
     void doAttemptTest() {
         Round round = new Round("banaan");
+        round.provideStartingHint();
         round.doAttempt("katoen");
+        System.out.println(round.getFeedback());
         Feedback feedback = new Feedback(
                 "katoen",
                 List.of(Mark.ABSENT, Mark.CORRECT, Mark.ABSENT, Mark.ABSENT, Mark.ABSENT, Mark.CORRECT));
@@ -44,6 +46,7 @@ public class RoundTest {
     @DisplayName("attempts should be +1 after doing an attempt")
     void attemptPlusOne() {
         Round round = new Round("banaan");
+        round.provideStartingHint();
         round.doAttempt("katoen");
         assertEquals(1, round.getAttempts());
     }
