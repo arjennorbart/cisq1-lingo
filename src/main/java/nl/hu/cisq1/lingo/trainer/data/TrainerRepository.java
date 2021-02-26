@@ -6,4 +6,6 @@ import java.util.Optional;
 
 public interface TrainerRepository extends JpaRepository<TrainerData, Long> {
     Optional<TrainerData> findTopByOrderByIdDesc();
+
+    //TODO: possible to have multiple active games, so need to write a Query for this.
 }

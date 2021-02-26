@@ -17,6 +17,7 @@ import java.util.List;
 public class Hint implements Serializable {
     private List<Character> characters;
 
+    //replaces old hint for a new one and keeps the marks that were CORRECT from the old hint.
     public void replaceHint(List<Character> newCharacters) {
         List<Character> replacementList = new ArrayList<>();
         for (int i = 0; i < this.characters.size(); i++) {

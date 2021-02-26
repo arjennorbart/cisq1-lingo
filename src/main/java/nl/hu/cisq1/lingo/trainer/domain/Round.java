@@ -19,9 +19,11 @@ public class Round implements Serializable {
     private final String wordToGuess;
     private int attempts;
     private final int maxAttempts = 5;
+    private boolean isFinished = false;
     private List<Feedback> feedback;
     private Hint hint;
     private Boolean wordIsGuessed;
+    private AttemptValidator validator = new AttemptValidator();
 
     public Round(String wordToGuess) {
         this.wordToGuess = wordToGuess;
@@ -29,11 +31,14 @@ public class Round implements Serializable {
         this.feedback = new ArrayList<>();
     }
 
+    //Might be redundant because Trainer class also checks this.
     public void maxAttemptsChecker() {
         if (this.attempts >= this.maxAttempts)
             throw new ReachedMaxAttemptsException("Maximum of 5 attempts");
     }
 
+    //Makes the first hint which returns te first letter of the wordToGuess
+    //and fills the rest of the length of the wordToGuess with dots.
     public void provideStartingHint() {
         List<Character> startingHintList = new ArrayList<>();
         char[] wordToGuessArray = wordToGuess.toCharArray();
@@ -43,24 +48,20 @@ public class Round implements Serializable {
         this.hint = new Hint(startingHintList);
     }
 
+    //Generates a List with marks from the attempt and provides feedback and a hint.
     public void doAttempt(String attempt) {
-        //TODO: make class for generating marks from the attempt and validating.
-        // Also fix Mark.PRESENT check (if char only appears once)
-        List<Mark> marks = new ArrayList<>();
-        char[] wordToGuessArray = this.wordToGuess.toCharArray();
-        char[] attemptArray = attempt.toCharArray();
-        for (int i = 0; i < attemptArray.length; i++) {
-            if (wordToGuessArray[i] == attemptArray[i])
-                marks.add(Mark.CORRECT);
-            else if (wordToGuess.contains(String.valueOf(attemptArray[i])))
-                marks.add(Mark.PRESENT);
-            else marks.add(Mark.ABSENT);
-        }
+        List<Mark> marks = this.validator.generateMarks(this.wordToGuess, attempt);
         this.attempts += 1;
-        maxAttemptsChecker();
         Feedback feedback = new Feedback(attempt, marks);
         this.feedback.add(feedback);
         this.wordIsGuessed = feedback.isWordGuessed();
         this.hint = feedback.giveHint(this.hint, this.wordToGuess);
+    }
+
+    //Only shows the wordToGuess to the player when the round is finished.
+    public String displayWordToPlayer() {
+        if (isFinished)
+            return this.wordToGuess;
+        return "Word is hidden until round is finished";
     }
 }

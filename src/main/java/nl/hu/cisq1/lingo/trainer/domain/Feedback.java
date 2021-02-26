@@ -4,7 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import nl.hu.cisq1.lingo.trainer.domain.exception.InvalidFeedbackException;
+import nl.hu.cisq1.lingo.trainer.domain.exception.InvalidAttemptLengthException;
 import nl.hu.cisq1.lingo.trainer.domain.utils.Utils;
 
 import java.io.Serializable;
@@ -22,7 +22,7 @@ public class Feedback implements Serializable {
 
     public Feedback(String attempt, List<Mark> marks) {
         if (attempt.length() != marks.size())
-            throw new InvalidFeedbackException("Invalid length");
+            throw new InvalidAttemptLengthException("Invalid length");
         this.attempt = attempt;
         this.marks = marks;
     }
@@ -31,6 +31,7 @@ public class Feedback implements Serializable {
         return this.marks.stream().allMatch(mark -> mark == Mark.CORRECT);
     }
 
+    //Makes a new hint from the attempt Marks from the new attempt and then calls Hint.replaceHint() to update the hint.
     public Hint giveHint(Hint previousHint, String wordToGuess) {
         char[] wordToGuessArray = wordToGuess.toCharArray();
         StringBuilder newHint = new StringBuilder();

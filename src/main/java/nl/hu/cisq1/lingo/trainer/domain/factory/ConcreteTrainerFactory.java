@@ -4,7 +4,7 @@ import nl.hu.cisq1.lingo.trainer.domain.Trainer;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ContreteTrainerFactory implements TrainerFactory{
+public class ConcreteTrainerFactory implements TrainerFactory{
 
     @Override
     public Trainer createTrainer() {

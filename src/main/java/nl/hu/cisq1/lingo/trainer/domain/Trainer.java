@@ -12,14 +12,10 @@ public class Trainer implements Serializable {
     private List<Round> rounds;
     private GameStatus gameStatus;
     private Round activeRound;
-    private boolean isFinished = false;
+    private boolean gameIsFinished = false;
 
     public Trainer() {
         this.rounds = new ArrayList<>();
-    }
-
-    public void wordValidator(String word) {
-        //word needs to be 5, 6 or 7 length depending on the round.
     }
 
     public void startNewRound(String wordToGuess) {
@@ -27,18 +23,32 @@ public class Trainer implements Serializable {
             this.rounds.add(this.activeRound);
         this.activeRound = new Round(wordToGuess);
         this.activeRound.provideStartingHint();
+        this.gameStatus = GameStatus.PLAYING;
     }
 
     public void doAttempt(String attempt) {
-        //TODO: call wordValidator and implement more validation
         this.activeRound.doAttempt(attempt);
+        checkGameStatus();
     }
 
-    public void isGameFinished() {
-        if (this.activeRound.getWordIsGuessed() || this.activeRound.getAttempts() >= this.activeRound.getMaxAttempts()) {
+    //checks the game status. If round is won the score is calculated. If round is lost the game has ended.
+    public void checkGameStatus() {
+        if (this.activeRound.getWordIsGuessed()) {
+            calculateScore();
+            this.gameStatus = GameStatus.ROUND_WON;
+            this.activeRound.setFinished(true);
             this.rounds.add(this.activeRound);
-            this.gameStatus = GameStatus.ELIMINATED;
-            this.isFinished = true;
         }
+        else if (this.activeRound.getAttempts() >= this.activeRound.getMaxAttempts()) {
+            this.gameStatus = GameStatus.ELIMINATED;
+            this.activeRound.setFinished(true);
+            this.rounds.add(this.activeRound);
+            this.gameIsFinished = true;
+        }
+    }
+
+    //calculates the players score when a word is guessed correctly.
+    public void calculateScore() {
+        this.score += 5 * (5 - this.activeRound.getAttempts() + 5);
     }
 }

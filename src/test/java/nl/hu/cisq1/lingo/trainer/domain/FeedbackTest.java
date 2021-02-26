@@ -1,6 +1,6 @@
 package nl.hu.cisq1.lingo.trainer.domain;
 
-import nl.hu.cisq1.lingo.trainer.domain.exception.InvalidFeedbackException;
+import nl.hu.cisq1.lingo.trainer.domain.exception.InvalidAttemptLengthException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -40,7 +40,7 @@ class FeedbackTest {
     @DisplayName("guess is not valid if it does not contain the right amount of characters")
     void guessIsNotValid() {
         assertThrows(
-                InvalidFeedbackException.class,
+                InvalidAttemptLengthException.class,
                 () -> new Feedback("woord", List.of(Mark.CORRECT))
         );
     }
