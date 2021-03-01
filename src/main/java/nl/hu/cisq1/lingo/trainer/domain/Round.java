@@ -60,7 +60,7 @@ public class Round implements Serializable {
 
     //Only shows the wordToGuess to the player when the round is finished.
     public String displayWordToPlayer() {
-        if (isFinished)
+        if (this.isFinished)
             return this.wordToGuess;
         return "Word is hidden until round is finished";
     }

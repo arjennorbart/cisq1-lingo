@@ -51,4 +51,13 @@ public class Trainer implements Serializable {
     public void calculateScore() {
         this.score += 5 * (5 - this.activeRound.getAttempts() + 5);
     }
+
+    //this method is used for providing a random word with the right length when starting a new round.
+    public int provideLengthNextWordToGuess() {
+        return switch (this.activeRound.getWordToGuess().length()) {
+            case 5 -> 6;
+            case 6 -> 7;
+            default -> 5;
+        };
+    }
 }

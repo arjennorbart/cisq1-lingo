@@ -12,13 +12,21 @@ public class RoundTest {
 
     @Test
     @DisplayName("Should have a maxiumum of 5 attempts")
-    void maxFiveAttemptsTest() {
+    void moreThanMaxFiveAttemptsTest() {
         Round round = new Round("banana");
-        round.setAttempts(6);
+        round.setAttempts(5);
         assertThrows(
                 ReachedMaxAttemptsException.class,
                 round::maxAttemptsChecker
         );
+    }
+
+    @Test
+    @DisplayName("Not reached maximum attempts, so should be valid")
+    void maxFiveAttemptsTest() {
+        Round round = new Round("banana");
+        round.setAttempts(4);
+        assertDoesNotThrow(round::maxAttemptsChecker);
     }
 
     @Test
@@ -49,5 +57,20 @@ public class RoundTest {
         round.provideStartingHint();
         round.doAttempt("katoen");
         assertEquals(1, round.getAttempts());
+    }
+
+    @Test
+    @DisplayName("Should show the word to guess when the round is finished")
+    void displayWordToPlayer() {
+        Round round = new Round("banana");
+        round.setFinished(true);
+        assertEquals("banana", round.displayWordToPlayer());
+    }
+
+    @Test
+    @DisplayName("Should show 'word is hidden until round is finished' to player ")
+    void notDisplayWordToPlayer() {
+        Round round = new Round("banana");
+        assertEquals("Word is hidden until round is finished", round.displayWordToPlayer());
     }
 }
