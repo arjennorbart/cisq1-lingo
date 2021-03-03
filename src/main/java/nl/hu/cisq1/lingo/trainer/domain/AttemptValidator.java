@@ -7,8 +7,7 @@ import nl.hu.cisq1.lingo.trainer.domain.exception.InvalidAttemptLengthException;
 import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Getter
 @NoArgsConstructor
@@ -16,39 +15,43 @@ public class AttemptValidator implements Serializable {
 
     //Generates a list of marks by comparing the attempt and wordToGuess.
     public List<Mark> generateMarks(String wordToGuess, String attempt) {
-        int markIsPresentCalls = 0;
+
         if (wordToGuess.length() != attempt.length())
             throw new InvalidAttemptLengthException("Invalid length");
-        List<Mark> marks = new ArrayList<>();
+
         char[] wordToGuessArray = wordToGuess.toCharArray();
         char[] attemptArray = attempt.toCharArray();
+        List<Mark> marks = new ArrayList<>();
+        HashMap<Character, Integer> map = new HashMap<>();
+
+        List<Character> correctChars = new ArrayList<>();
+
+        //this loop is needed to fill the correctChars, which is needed for calculating the present characters correctly
+        for (int o = 0; o < attemptArray.length; o++) {
+            if (wordToGuessArray[o] == attemptArray[o]) {
+                marks.add(Mark.CORRECT);
+                correctChars.add(attemptArray[o]);
+            }
+            else marks.add(Mark.INVALID);
+        }
+
         for (int i = 0; i < attemptArray.length; i++) {
-            if (wordToGuess.contains(String.valueOf(attemptArray[i]))) {
-                if (wordToGuessArray[i] == attemptArray[i]) {
-                    marks.add(Mark.CORRECT);
-                    markIsPresentCalls += 1;
+            if (marks.get(i) != Mark.CORRECT) {
+                int occurrenceInWordToGuess = StringUtils.countOccurrencesOf(wordToGuess, String.valueOf(attemptArray[i]));
+                occurrenceInWordToGuess -= Collections.frequency(correctChars, attemptArray[i]);
+                map.merge(attemptArray[i], 1, Integer::sum);
+
+                if (wordToGuess.contains(String.valueOf(attemptArray[i]))) {
+                    if (map.get(attemptArray[i]) > occurrenceInWordToGuess) {
+                        marks.set(i, Mark.ABSENT);
+                        continue;
+                    }
+                    marks.set(i, Mark.PRESENT);
                     continue;
                 }
-                markIsPresentCalls += 1;
-                marks.add(markIsPresentValidator(wordToGuess, attempt, attemptArray[i], markIsPresentCalls));
-            } else marks.add(Mark.ABSENT);
+                marks.set(i, Mark.ABSENT);
+            }
         }
         return marks;
-    }
-
-    //Checks if the mark should be present, based on the occurrences in the wordToGuess ant the attempt
-    private Mark markIsPresentValidator(String wordToeGuess, String attempt, char presentChar, int markIsPresentCalls) {
-        int occuranceInWordToGuess = StringUtils.countOccurrencesOf(wordToeGuess, String.valueOf(presentChar));
-        int occuranceInAttempt = StringUtils.countOccurrencesOf(attempt, String.valueOf(presentChar));
-
-        //If length is the same, then Mark.PRESENT can be applied everytime we call this method.
-        if (occuranceInWordToGuess == occuranceInAttempt)
-            return Mark.PRESENT;
-
-        if (markIsPresentCalls <= occuranceInWordToGuess)
-            return Mark.PRESENT;
-
-        //if this method is called more than the character occurs in the wordToGuess, it should be absent
-        return Mark.ABSENT;
     }
 }
