@@ -9,18 +9,16 @@ import java.util.List;
 @Getter
 public class Trainer implements Serializable {
     private int score = 0;
-    private List<Round> rounds;
+    private List<Round> previousRounds;
     private GameStatus gameStatus;
     private Round activeRound;
     private boolean gameIsFinished = false;
 
     public Trainer() {
-        this.rounds = new ArrayList<>();
+        this.previousRounds = new ArrayList<>();
     }
 
     public void startNewRound(String wordToGuess) {
-        if (this.activeRound != null)
-            this.rounds.add(this.activeRound);
         this.activeRound = new Round(wordToGuess);
         this.activeRound.provideStartingHint();
         this.gameStatus = GameStatus.PLAYING;
@@ -37,12 +35,12 @@ public class Trainer implements Serializable {
             calculateScore();
             this.gameStatus = GameStatus.ROUND_WON;
             this.activeRound.setFinished(true);
-            this.rounds.add(this.activeRound);
+            this.previousRounds.add(this.activeRound);
         }
         else if (this.activeRound.getAttempts() >= this.activeRound.getMaxAttempts()) {
             this.gameStatus = GameStatus.ELIMINATED;
             this.activeRound.setFinished(true);
-            this.rounds.add(this.activeRound);
+            this.previousRounds.add(this.activeRound);
             this.gameIsFinished = true;
         }
     }
