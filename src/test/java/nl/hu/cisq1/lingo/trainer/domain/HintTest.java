@@ -41,7 +41,13 @@ public class HintTest {
                         new Hint(List.of('.', 'a', '.', '.', '.', 'n')),
                         //if the attempt is "kanaal" the feedback should be ".anaan" and not ".anaa."
                         new Hint(List.of('.', 'a', 'n', 'a', 'a', 'n')),
-                        List.of('.', 'a', 'n', 'a', 'a', 'l'))
+                        List.of('.', 'a', 'n', 'a', 'a', 'l')),
+                Arguments.of(
+                        //previous hint is "katoen"
+                        new Hint(List.of('.', 'a', '.', '.', '.', 'n')),
+                        //if the attempt is "katana" the feedback should be ".a.a+n" and not ".anaa."
+                        new Hint(List.of('.', 'a', '.', 'a', '+', 'n')),
+                        List.of('.', 'a', '.', 'a', '+', '+'))
         );
     }
 }

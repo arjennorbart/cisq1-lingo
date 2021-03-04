@@ -21,9 +21,11 @@ public class Hint implements Serializable {
     public void replaceHint(List<Character> newCharacters) {
         List<Character> replacementList = new ArrayList<>();
         for (int i = 0; i < this.characters.size(); i++) {
-            if(this.characters.get(i).equals(Utils.dot()) || this.characters.get(i).equals(Utils.plus()))
+            if (!Character.isLetter(this.characters.get(i))) {
                 replacementList.add(newCharacters.get(i));
-            else replacementList.add(this.characters.get(i));
+                continue;
+            }
+            replacementList.add(this.characters.get(i));
         }
         this.characters = replacementList;
     }

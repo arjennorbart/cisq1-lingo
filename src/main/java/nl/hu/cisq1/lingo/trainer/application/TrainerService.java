@@ -52,12 +52,12 @@ public class TrainerService {
         return trainer;
     }
 
-    //TODO: provide random word length needs to be calculated depending on the previous round
+    //starts a new round and provides a random word with it's length based on the word of the previous round.
     public Trainer startNewRound() {
         TrainerData lastSavedGame = getLastSavedGame();
         Trainer trainer = lastSavedGame.getTrainer();
         if (!trainer.isGameIsFinished() && trainer.getActiveRound().isFinished())
-            trainer.startNewRound(wordService.provideRandomWord(6));
+            trainer.startNewRound(wordService.provideRandomWord(trainer.provideLengthNextWordToGuess()));
         this.trainerRepository.save(lastSavedGame);
         return trainer;
     }

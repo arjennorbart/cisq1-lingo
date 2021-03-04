@@ -9,18 +9,16 @@ import java.util.List;
 @Getter
 public class Trainer implements Serializable {
     private int score = 0;
-    private List<Round> rounds;
+    private List<Round> previousRounds;
     private GameStatus gameStatus;
     private Round activeRound;
     private boolean gameIsFinished = false;
 
     public Trainer() {
-        this.rounds = new ArrayList<>();
+        this.previousRounds = new ArrayList<>();
     }
 
     public void startNewRound(String wordToGuess) {
-        if (this.activeRound != null)
-            this.rounds.add(this.activeRound);
         this.activeRound = new Round(wordToGuess);
         this.activeRound.provideStartingHint();
         this.gameStatus = GameStatus.PLAYING;
@@ -37,12 +35,12 @@ public class Trainer implements Serializable {
             calculateScore();
             this.gameStatus = GameStatus.ROUND_WON;
             this.activeRound.setFinished(true);
-            this.rounds.add(this.activeRound);
+            this.previousRounds.add(this.activeRound);
         }
         else if (this.activeRound.getAttempts() >= this.activeRound.getMaxAttempts()) {
             this.gameStatus = GameStatus.ELIMINATED;
             this.activeRound.setFinished(true);
-            this.rounds.add(this.activeRound);
+            this.previousRounds.add(this.activeRound);
             this.gameIsFinished = true;
         }
     }
@@ -50,5 +48,14 @@ public class Trainer implements Serializable {
     //calculates the players score when a word is guessed correctly.
     public void calculateScore() {
         this.score += 5 * (5 - this.activeRound.getAttempts() + 5);
+    }
+
+    //this method is used for providing a random word with the right length when starting a new round.
+    public int provideLengthNextWordToGuess() {
+        return switch (this.activeRound.getWordToGuess().length()) {
+            case 5 -> 6;
+            case 6 -> 7;
+            default -> 5;
+        };
     }
 }
