@@ -91,8 +91,6 @@
                         <configuration>
                             <excludes>
                                 <exclude>**/LingoApplication.*</exclude>
-                                <exclude>**/application/**/*</exclude>
-                                <exclude>**/presentation/**/*</exclude>
                             </excludes>
                         </configuration>
                     </execution>
