@@ -7,6 +7,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -39,9 +40,10 @@ class FeedbackTest {
     @Test
     @DisplayName("guess is not valid if it does not contain the right amount of characters")
     void guessIsNotValid() {
+        List<Mark> list = List.of(Mark.CORRECT);
         assertThrows(
                 InvalidAttemptLengthException.class,
-                () -> new Feedback("woord", List.of(Mark.CORRECT))
+                () -> new Feedback("woord", list)
         );
     }
 

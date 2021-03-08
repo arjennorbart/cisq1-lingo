@@ -20,7 +20,7 @@ public class Round implements Serializable {
     private int attempts;
     private final int maxAttempts = 5;
     private boolean isFinished = false;
-    private List<Feedback> feedback;
+    private List<Feedback> feedbackList;
     private Hint hint;
     private Boolean wordIsGuessed;
     private AttemptValidator validator = new AttemptValidator();
@@ -28,10 +28,9 @@ public class Round implements Serializable {
     public Round(String wordToGuess) {
         this.wordToGuess = wordToGuess;
         maxAttemptsChecker();
-        this.feedback = new ArrayList<>();
+        this.feedbackList = new ArrayList<>();
     }
 
-    //Might be redundant because Trainer class also checks this.
     public void maxAttemptsChecker() {
         if (this.attempts >= this.maxAttempts)
             throw new ReachedMaxAttemptsException("Maximum of 5 attempts");
@@ -49,13 +48,16 @@ public class Round implements Serializable {
     }
 
     //Generates a List with marks from the attempt and provides feedback and a hint.
-    public void doAttempt(String attempt) {
+    public boolean doAttempt(String attempt) {
         List<Mark> marks = this.validator.generateMarks(this.wordToGuess, attempt);
         this.attempts += 1;
         Feedback feedback = new Feedback(attempt, marks);
-        this.feedback.add(feedback);
+        this.feedbackList.add(feedback);
         this.wordIsGuessed = feedback.isWordGuessed();
+        if (this.wordIsGuessed || this.attempts >= this.maxAttempts)
+            this.isFinished = true;
         this.hint = feedback.giveHint(this.hint, this.wordToGuess);
+        return this.isFinished;
     }
 
     //Only shows the wordToGuess to the player when the round is finished.

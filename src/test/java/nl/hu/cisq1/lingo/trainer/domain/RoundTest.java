@@ -43,11 +43,11 @@ public class RoundTest {
         Round round = new Round("banaan");
         round.provideStartingHint();
         round.doAttempt("katoen");
-        System.out.println(round.getFeedback());
+        System.out.println(round.getFeedbackList());
         Feedback feedback = new Feedback(
                 "katoen",
                 List.of(Mark.ABSENT, Mark.CORRECT, Mark.ABSENT, Mark.ABSENT, Mark.ABSENT, Mark.CORRECT));
-        assertEquals(feedback, round.getFeedback().get(round.getFeedback().size() - 1));
+        assertEquals(feedback, round.getFeedbackList().get(round.getFeedbackList().size() - 1));
     }
 
     @Test
