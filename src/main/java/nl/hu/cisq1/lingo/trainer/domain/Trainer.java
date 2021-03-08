@@ -25,24 +25,22 @@ public class Trainer implements Serializable {
     }
 
     public void doAttempt(String attempt) {
-        this.activeRound.doAttempt(attempt);
-        checkGameStatus();
+        checkGameStatus(this.activeRound.doAttempt(attempt));
     }
 
     //checks the game status. If round is won the score is calculated. If round is lost the game has ended.
-    public void checkGameStatus() {
-        if (this.activeRound.getWordIsGuessed()) {
+    private void checkGameStatus(boolean isRoundFinished) {
+        if (!isRoundFinished)
+            return;
+
+        if (this.activeRound.getAttempts() >= this.activeRound.getMaxAttempts()) {
+            this.gameStatus = GameStatus.ELIMINATED;
+            this.gameIsFinished = true;
+        } else {
             calculateScore();
             this.gameStatus = GameStatus.ROUND_WON;
-            this.activeRound.setFinished(true);
-            this.previousRounds.add(this.activeRound);
         }
-        else if (this.activeRound.getAttempts() >= this.activeRound.getMaxAttempts()) {
-            this.gameStatus = GameStatus.ELIMINATED;
-            this.activeRound.setFinished(true);
-            this.previousRounds.add(this.activeRound);
-            this.gameIsFinished = true;
-        }
+        this.previousRounds.add(this.activeRound);
     }
 
     //calculates the players score when a word is guessed correctly.
