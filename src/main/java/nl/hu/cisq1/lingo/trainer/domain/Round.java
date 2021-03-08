@@ -20,7 +20,7 @@ public class Round implements Serializable {
     private int attempts;
     private final int maxAttempts = 5;
     private boolean isFinished = false;
-    private List<Feedback> feedback;
+    private List<Feedback> feedbackList;
     private Hint hint;
     private Boolean wordIsGuessed;
     private AttemptValidator validator = new AttemptValidator();
@@ -28,7 +28,7 @@ public class Round implements Serializable {
     public Round(String wordToGuess) {
         this.wordToGuess = wordToGuess;
         maxAttemptsChecker();
-        this.feedback = new ArrayList<>();
+        this.feedbackList = new ArrayList<>();
     }
 
     public void maxAttemptsChecker() {
@@ -52,7 +52,7 @@ public class Round implements Serializable {
         List<Mark> marks = this.validator.generateMarks(this.wordToGuess, attempt);
         this.attempts += 1;
         Feedback feedback = new Feedback(attempt, marks);
-        this.feedback.add(feedback);
+        this.feedbackList.add(feedback);
         this.wordIsGuessed = feedback.isWordGuessed();
         if (this.wordIsGuessed || this.attempts >= this.maxAttempts)
             this.isFinished = true;
