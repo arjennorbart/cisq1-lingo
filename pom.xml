@@ -120,7 +120,7 @@
                                             <counter>CLASS</counter>
                                             <value>MISSEDCOUNT</value>
                                             <!-- needs to be 0 -->
-                                            <maximum>2</maximum>
+                                            <maximum>4</maximum>
                                         </limit>
                                     </limits>
                                 </rule>
