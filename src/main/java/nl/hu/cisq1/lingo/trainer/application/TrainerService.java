@@ -1,6 +1,5 @@
 package nl.hu.cisq1.lingo.trainer.application;
 
-import nl.hu.cisq1.lingo.trainer.data.TrainerData;
 import nl.hu.cisq1.lingo.trainer.data.TrainerRepository;
 import nl.hu.cisq1.lingo.trainer.domain.Trainer;
 import nl.hu.cisq1.lingo.trainer.domain.factory.TrainerFactory;
@@ -23,47 +22,46 @@ public class TrainerService {
         this.trainerFactoryInterface = trainerFactoryInterface;
     }
 
-    //TODO: should be able to have multiple active games.
-    public Trainer startGame() {
-        Optional<TrainerData> lastSaved = this.trainerRepository.findTopByOrderByIdDesc();
-        if (lastSaved.isEmpty())
+    public Trainer startGame(Long id) {
+        if (id == null)
             return startNewGame();
-        return lastSaved.get().getTrainer();
+        Optional<Trainer> existingGame = this.trainerRepository.findById(id);
+        if (existingGame.isEmpty())
+            return startNewGame();
+        return existingGame.get();
     }
 
     //Starting a new game always provides a 5 letter word.
     public Trainer startNewGame() {
         Trainer trainer = trainerFactoryInterface.createTrainer();
         trainer.startNewRound(wordService.provideRandomWord(5));
-        TrainerData trainerData = new TrainerData(trainer);
-        this.trainerRepository.save(trainerData);
+        this.trainerRepository.save(trainer);
         return trainer;
     }
 
-    //TODO: possible to have multiple active games, so have to get the correct game, not the lastSavedGame.
-    public Trainer doAttempt(String attempt) {
-        TrainerData lastSavedGame = getLastSavedGame();
-        Trainer trainer = lastSavedGame.getTrainer();
-        if (!trainer.getActiveRound().isFinished()) {
+    public Trainer doAttempt(String attempt, Long gameId) {
+        Trainer game = getTrainerById(gameId);
+        if (!game.getActiveRound().isFinished()) {
             wordService.findWordByString(attempt);
-            trainer.doAttempt(attempt);
+            game.doAttempt(attempt);
         }
-        this.trainerRepository.save(lastSavedGame);
-        return trainer;
+        this.trainerRepository.save(game);
+        return game;
     }
 
     //starts a new round and provides a random word with it's length based on the word of the previous round.
-    public Trainer startNewRound() {
-        TrainerData lastSavedGame = getLastSavedGame();
-        Trainer trainer = lastSavedGame.getTrainer();
-        if (!trainer.isGameIsFinished() && trainer.getActiveRound().isFinished())
-            trainer.startNewRound(wordService.provideRandomWord(trainer.provideLengthNextWordToGuess()));
-        this.trainerRepository.save(lastSavedGame);
-        return trainer;
+    public Trainer startNewRound(Long gameId) {
+        Trainer game = getTrainerById(gameId);
+        if (!game.isGameIsFinished() && game.getActiveRound().isFinished())
+            game.startNewRound(wordService.provideRandomWord(game.provideLengthNextWordToGuess()));
+        this.trainerRepository.save(game);
+        return game;
     }
 
-    //Need to replace this in the future because there can be multiple active games.
-    private TrainerData getLastSavedGame() {
-        return this.trainerRepository.findTopByOrderByIdDesc().orElseThrow();
+    public Trainer getTrainerById(Long id) {
+        if (trainerRepository.findById(id).isPresent()) {
+            return trainerRepository.findById(id).get();
+        }
+        return null;
     }
 }

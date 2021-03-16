@@ -16,9 +16,10 @@ public class TrainerController {
     }
 
     @GetMapping("/startNewGame")
-    public HintDTO startTrainer() {
-        Trainer trainer = this.trainerService.startGame();
+    public HintDTO startTrainer(@RequestParam(required = false) Long id) {
+        Trainer trainer = this.trainerService.startGame(id);
         return new HintDTO(
+                trainer.getId(),
                 trainer.getScore(),
                 trainer.getActiveRound().getAttempts(),
                 trainer.getActiveRound().getHint(),
@@ -28,9 +29,10 @@ public class TrainerController {
     }
 
     @GetMapping("/startNewRound")
-    public HintDTO startNewRound() {
-        Trainer trainer = this.trainerService.startNewRound();
+    public HintDTO startNewRound(@RequestParam Long gameId) {
+        Trainer trainer = this.trainerService.startNewRound(gameId);
         return new HintDTO(
+                trainer.getId(),
                 trainer.getScore(),
                 trainer.getActiveRound().getAttempts(),
                 trainer.getActiveRound().getHint(),
@@ -40,9 +42,10 @@ public class TrainerController {
     }
 
     @PostMapping("/doAttempt")
-    public HintDTO doAttempt(@RequestBody AttemptDTO attempt) {
-        Trainer trainer = this.trainerService.doAttempt(attempt.attempt);
+    public HintDTO doAttempt(@RequestBody AttemptDTO attempt, @RequestParam Long gameId) {
+        Trainer trainer = this.trainerService.doAttempt(attempt.attempt, gameId);
         return new HintDTO(
+                trainer.getId(),
                 trainer.getScore(),
                 trainer.getActiveRound().getAttempts(),
                 trainer.getActiveRound().getHint(),

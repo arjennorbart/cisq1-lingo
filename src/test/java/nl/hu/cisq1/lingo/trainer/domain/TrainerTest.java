@@ -20,16 +20,6 @@ class TrainerTest {
         this.trainer = new Trainer();
     }
 
-    @Test
-    @DisplayName("If the word is guessed correctly the score should be calculated")
-    void calculateScore() {
-        trainer.startNewRound("banaan");
-        trainer.doAttempt("banana");
-        trainer.getActiveRound().setAttempts(3);
-        trainer.calculateScore();
-        assertEquals(35, trainer.getScore());
-    }
-
     @ParameterizedTest
     @MethodSource("provideRounds")
     @DisplayName("This checks the GameStatus")
@@ -40,13 +30,27 @@ class TrainerTest {
         assertEquals(gameStatus, trainer.getGameStatus());
     }
 
+    @Test
+    @DisplayName("If the word is guessed correctly the score should be calculated")
+    void calculateScore() {
+        trainer.startNewRound("banaan");
+        trainer.doAttempt("banana");
+        trainer.getActiveRound().setAttempts(3);
+        trainer.calculateScore();
+        assertEquals(35, trainer.getScore());
+    }
+
+
+
     static Stream<Arguments> provideRounds() {
         return Stream.of(
-                Arguments.of(0, "banana", GameStatus.PLAYING),
-                Arguments.of(1, "banden", GameStatus.PLAYING),
-                Arguments.of(2, "nasaal", GameStatus.PLAYING),
-                Arguments.of(3, "banaan", GameStatus.ROUND_WON),
-                Arguments.of(4, "banken", GameStatus.ELIMINATED)
+                Arguments.of(5, "banaan", GameStatus.ROUND_WON),
+
+                Arguments.of(1, "banana", GameStatus.PLAYING),
+                Arguments.of(2, "banden", GameStatus.PLAYING),
+                Arguments.of(3, "nasaal", GameStatus.PLAYING),
+                Arguments.of(4, "banaan", GameStatus.ROUND_WON),
+                Arguments.of(5, "banken", GameStatus.ELIMINATED)
         );
     }
 

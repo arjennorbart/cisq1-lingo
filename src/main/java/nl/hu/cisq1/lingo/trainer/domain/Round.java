@@ -4,36 +4,43 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import nl.hu.cisq1.lingo.trainer.domain.exception.ReachedMaxAttemptsException;
 import nl.hu.cisq1.lingo.trainer.domain.utils.Utils;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
+@Table(name = "round")
 @EqualsAndHashCode
 @Getter
 @Setter
 @ToString
 public class Round implements Serializable {
-    private final String wordToGuess;
+
+    @Id
+    @GeneratedValue
+    private Long id;
+
+    @Column
+    private String wordToGuess;
     private int attempts;
     private final int maxAttempts = 5;
     private boolean isFinished = false;
-    private List<Feedback> feedbackList;
-    private Hint hint;
     private Boolean wordIsGuessed;
+    private Hint hint;
     private AttemptValidator validator = new AttemptValidator();
+
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Feedback> feedbackList;
+
+    public Round() {
+    }
 
     public Round(String wordToGuess) {
         this.wordToGuess = wordToGuess;
-        maxAttemptsChecker();
         this.feedbackList = new ArrayList<>();
-    }
-
-    public void maxAttemptsChecker() {
-        if (this.attempts >= this.maxAttempts)
-            throw new ReachedMaxAttemptsException("Maximum of 5 attempts");
     }
 
     //Makes the first hint which returns te first letter of the wordToGuess
@@ -48,16 +55,28 @@ public class Round implements Serializable {
     }
 
     //Generates a List with marks from the attempt and provides feedback and a hint.
-    public boolean doAttempt(String attempt) {
+    public GameStatus doAttempt(String attempt) {
+        GameStatus gameStatus = GameStatus.PLAYING;
         List<Mark> marks = this.validator.generateMarks(this.wordToGuess, attempt);
-        this.attempts += 1;
         Feedback feedback = new Feedback(attempt, marks);
-        this.feedbackList.add(feedback);
         this.wordIsGuessed = feedback.isWordGuessed();
-        if (this.wordIsGuessed || this.attempts >= this.maxAttempts)
-            this.isFinished = true;
+        gameStatus = finishedStatus();
         this.hint = feedback.giveHint(this.hint, this.wordToGuess);
-        return this.isFinished;
+        this.attempts++;
+        this.feedbackList.add(feedback);
+        return gameStatus;
+    }
+
+    public GameStatus finishedStatus() {
+        if (this.wordIsGuessed) {
+            this.isFinished = true;
+            return GameStatus.ROUND_WON;
+        }
+        else if  (this.attempts >= this.maxAttempts) {
+            this.isFinished = true;
+            return GameStatus.ELIMINATED;
+        }
+        return GameStatus.PLAYING;
     }
 
     //Only shows the wordToGuess to the player when the round is finished.

@@ -11,25 +11,6 @@ import static org.junit.jupiter.api.Assertions.*;
 public class RoundTest {
 
     @Test
-    @DisplayName("Should have a maxiumum of 5 attempts")
-    void moreThanMaxFiveAttemptsTest() {
-        Round round = new Round("banana");
-        round.setAttempts(5);
-        assertThrows(
-                ReachedMaxAttemptsException.class,
-                round::maxAttemptsChecker
-        );
-    }
-
-    @Test
-    @DisplayName("Not reached maximum attempts, so should be valid")
-    void maxFiveAttemptsTest() {
-        Round round = new Round("banana");
-        round.setAttempts(4);
-        assertDoesNotThrow(round::maxAttemptsChecker);
-    }
-
-    @Test
     @DisplayName("provide starting feedback should show the first letter")
     void provideStartingHintTest() {
         Round round = new Round("banana");
