@@ -1,33 +1,13 @@
 package nl.hu.cisq1.lingo.trainer.domain;
 
-import nl.hu.cisq1.lingo.trainer.domain.exception.ReachedMaxAttemptsException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class RoundTest {
-
-    @Test
-    @DisplayName("Should have a maxiumum of 5 attempts")
-    void moreThanMaxFiveAttemptsTest() {
-        Round round = new Round("banana");
-        round.setAttempts(5);
-        assertThrows(
-                ReachedMaxAttemptsException.class,
-                round::maxAttemptsChecker
-        );
-    }
-
-    @Test
-    @DisplayName("Not reached maximum attempts, so should be valid")
-    void maxFiveAttemptsTest() {
-        Round round = new Round("banana");
-        round.setAttempts(4);
-        assertDoesNotThrow(round::maxAttemptsChecker);
-    }
 
     @Test
     @DisplayName("provide starting feedback should show the first letter")

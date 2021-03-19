@@ -7,18 +7,30 @@ import lombok.ToString;
 import nl.hu.cisq1.lingo.trainer.domain.exception.InvalidAttemptLengthException;
 import nl.hu.cisq1.lingo.trainer.domain.utils.Utils;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Entity
+@Table(name = "feedback")
 @EqualsAndHashCode
 @Getter
 @Setter
 @ToString
 public class Feedback implements Serializable {
 
+    @Id
+    @GeneratedValue
+    @Column(name = "roundId")
+    private Long id;
     private String attempt;
+
+    @Transient
     private List<Mark> marks;
+
+    public Feedback() {
+    }
 
     public Feedback(String attempt, List<Mark> marks) {
         if (attempt.length() != marks.size())

@@ -1,18 +1,32 @@
 package nl.hu.cisq1.lingo.trainer.domain;
 
 import lombok.Getter;
+import lombok.Setter;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
+@Table(name = "trainer")
 @Getter
+@Setter
 public class Trainer implements Serializable {
+
+    @Id
+    @GeneratedValue
+    @Column(name = "id")
+    private Long id;
     private int score = 0;
-    private List<Round> previousRounds;
     private GameStatus gameStatus;
-    private Round activeRound;
     private boolean gameIsFinished = false;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private Round activeRound;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    private final List<Round> previousRounds;
 
     public Trainer() {
         this.previousRounds = new ArrayList<>();
@@ -29,18 +43,13 @@ public class Trainer implements Serializable {
     }
 
     //checks the game status. If round is won the score is calculated. If round is lost the game has ended.
-    private void checkGameStatus(boolean isRoundFinished) {
-        if (!isRoundFinished)
-            return;
-
-        if (this.activeRound.getAttempts() >= this.activeRound.getMaxAttempts()) {
-            this.gameStatus = GameStatus.ELIMINATED;
-            this.gameIsFinished = true;
-        } else {
-            calculateScore();
-            this.gameStatus = GameStatus.ROUND_WON;
+    private void checkGameStatus(GameStatus gameStatus) {
+        this.gameStatus = gameStatus;
+        if (this.activeRound.isFinished()) {
+            if (this.gameStatus.equals(GameStatus.ROUND_WON))
+                calculateScore();
+            this.previousRounds.add(this.activeRound);
         }
-        this.previousRounds.add(this.activeRound);
     }
 
     //calculates the players score when a word is guessed correctly.

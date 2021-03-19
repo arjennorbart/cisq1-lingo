@@ -8,6 +8,7 @@ import nl.hu.cisq1.lingo.trainer.domain.Hint;
 @AllArgsConstructor
 @Getter
 public class HintDTO {
+    public final Long gameId;
     public final int score;
     public final int attempts;
     public final Hint hint;
