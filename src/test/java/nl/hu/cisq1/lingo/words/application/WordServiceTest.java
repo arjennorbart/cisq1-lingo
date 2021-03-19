@@ -2,6 +2,7 @@ package nl.hu.cisq1.lingo.words.application;
 
 import nl.hu.cisq1.lingo.words.data.SpringWordRepository;
 import nl.hu.cisq1.lingo.words.domain.Word;
+import nl.hu.cisq1.lingo.words.domain.exception.InvalidWordException;
 import nl.hu.cisq1.lingo.words.domain.exception.WordLengthNotSupportedException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,8 +13,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 /**
@@ -61,5 +61,25 @@ class WordServiceTest {
                 Arguments.of(6, "castle"),
                 Arguments.of(7, "knights")
         );
+    }
+
+    @Test
+    @DisplayName("Throws invalid word exception when attempt is not valid")
+    void attemptIsNotValid() {
+        SpringWordRepository mockRepository = mock(SpringWordRepository.class);
+        WordService service = new WordService(mockRepository);
+        assertThrows(
+                InvalidWordException.class,
+                () -> service.findWordByString("noWord")
+        );
+    }
+
+    @Test
+    @DisplayName("Does not throw when attempt is valid")
+    void doesNotThrowWhenAttemptIsValid() {
+        SpringWordRepository mockRepository = mock(SpringWordRepository.class);
+        when(mockRepository.findWordByValue(anyString())).thenReturn(Optional.of(new Word("vulva")));
+        WordService service = new WordService(mockRepository);
+        assertDoesNotThrow(() -> service.findWordByString("vulva"));
     }
 }

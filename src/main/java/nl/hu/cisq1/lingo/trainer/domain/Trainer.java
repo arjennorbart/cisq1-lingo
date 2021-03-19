@@ -1,6 +1,7 @@
 package nl.hu.cisq1.lingo.trainer.domain;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -10,6 +11,7 @@ import java.util.List;
 @Entity
 @Table(name = "trainer")
 @Getter
+@Setter
 public class Trainer implements Serializable {
 
     @Id
@@ -18,7 +20,7 @@ public class Trainer implements Serializable {
     private Long id;
     private int score = 0;
     private GameStatus gameStatus;
-    private final boolean gameIsFinished = false;
+    private boolean gameIsFinished = false;
 
     @OneToOne(cascade = CascadeType.ALL)
     private Round activeRound;

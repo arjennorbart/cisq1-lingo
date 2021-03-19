@@ -59,9 +59,6 @@ public class TrainerService {
     }
 
     public Trainer getTrainerById(Long id) {
-        if (trainerRepository.findById(id).isPresent()) {
-            return trainerRepository.findById(id).get();
-        }
-        return null;
+        return trainerRepository.findById(id).orElseThrow();
     }
 }
