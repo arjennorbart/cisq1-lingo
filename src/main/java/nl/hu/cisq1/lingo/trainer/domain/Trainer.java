@@ -20,7 +20,6 @@ public class Trainer implements Serializable {
     private Long id;
     private int score = 0;
     private GameStatus gameStatus;
-    private boolean gameIsFinished = false;
 
     @OneToOne(cascade = CascadeType.ALL)
     private Round activeRound;
@@ -43,7 +42,7 @@ public class Trainer implements Serializable {
     }
 
     //checks the game status. If round is won the score is calculated. If round is lost the game has ended.
-    private void checkGameStatus(GameStatus gameStatus) {
+    public void checkGameStatus(GameStatus gameStatus) {
         this.gameStatus = gameStatus;
         if (this.activeRound.isFinished()) {
             if (this.gameStatus.equals(GameStatus.ROUND_WON))

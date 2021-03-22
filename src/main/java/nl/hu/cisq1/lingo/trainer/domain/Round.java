@@ -56,7 +56,7 @@ public class Round implements Serializable {
 
     //Generates a List with marks from the attempt and provides feedback and a hint.
     public GameStatus doAttempt(String attempt) {
-        GameStatus gameStatus = GameStatus.PLAYING;
+        GameStatus gameStatus;
         List<Mark> marks = this.validator.generateMarks(this.wordToGuess, attempt);
         Feedback feedback = new Feedback(attempt, marks);
         this.wordIsGuessed = feedback.isWordGuessed();

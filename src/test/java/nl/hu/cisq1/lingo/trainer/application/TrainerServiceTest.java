@@ -1,6 +1,7 @@
 package nl.hu.cisq1.lingo.trainer.application;
 
 import nl.hu.cisq1.lingo.trainer.data.TrainerRepository;
+import nl.hu.cisq1.lingo.trainer.domain.GameStatus;
 import nl.hu.cisq1.lingo.trainer.domain.Round;
 import nl.hu.cisq1.lingo.trainer.domain.Trainer;
 import nl.hu.cisq1.lingo.trainer.domain.factory.TrainerFactory;
@@ -13,8 +14,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class TrainerServiceTest {
 
@@ -25,18 +25,19 @@ class TrainerServiceTest {
 
     private TrainerService trainerService;
     private Trainer trainer;
+    private WordService wordService;
 
     @BeforeEach
     void initialize() {
-        WordService wordService = mock(WordService.class);
         TrainerFactory factory = mock(TrainerFactory.class);
         TrainerRepository trainerRepository = mock(TrainerRepository.class);
 
+        this.wordService = mock(WordService.class);
         this.trainer = mock(Trainer.class);
-        this.trainerService = new TrainerService(wordService, trainerRepository, factory);
+        this.trainerService = new TrainerService(this.wordService, trainerRepository, factory);
 
         when(factory.createTrainer()).thenReturn(this.trainer);
-        when(wordService.provideRandomWord(anyInt())).thenReturn("kater");
+        when(this.wordService.provideRandomWord(anyInt())).thenReturn("kater");
         when(trainerRepository.save(isA(Trainer.class))).thenReturn(this.trainer);
         when(trainerRepository.findById(1L)).thenReturn(Optional.of(this.trainer));
         when(this.trainer.getId()).thenReturn(1L);
@@ -47,6 +48,7 @@ class TrainerServiceTest {
     @DisplayName("should return a new game when no parameter is given to startNewGame method")
     void startNewGame() {
         assertNotNull(this.trainerService.startGame(null));
+        verify(this.trainer, times(1)).startNewRound("kater");
     }
 
     @Test
@@ -74,6 +76,14 @@ class TrainerServiceTest {
     }
 
     @Test
+    @DisplayName("Should start new round when word is guessed")
+    void startNewRoundWhenWordIsGuessed() {
+        assertEquals(1L, this.trainerService.doAttempt("kater", 1L).getId());
+        verify(this.trainer, times(1)).doAttempt("kater");
+        verify(this.wordService, times(1)).findWordByString("kater");
+    }
+
+    @Test
     @DisplayName("Doing a valid attempt should not throw")
     void shouldReturnAGameWhenRoundIsFinished() {
         this.trainer.getActiveRound().setFinished(true);
@@ -90,13 +100,6 @@ class TrainerServiceTest {
     @DisplayName("Starting a new round should return a game")
     void startingNewRoundShouldReturnAGame() {
         assertEquals(1L, this.trainerService.startNewRound(1L).getId());
-    }
-
-    @Test
-    @DisplayName("Starting a new round should return a game when the game is not finished")
-    void startingNewRoundShouldReturnAGameWhenGameIsNotFinished() {
-        this.trainer.setGameIsFinished(false);
-        this.trainer.getActiveRound().setFinished(true);
-        assertEquals(1L, this.trainerService.startNewRound(1L).getId());
+        verify(this.trainer, times(1)).getActiveRound();
     }
 }

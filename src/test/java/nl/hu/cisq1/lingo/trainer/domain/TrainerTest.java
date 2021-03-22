@@ -2,7 +2,6 @@ package nl.hu.cisq1.lingo.trainer.domain;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -21,31 +20,38 @@ class TrainerTest {
     }
 
     @ParameterizedTest
+    @MethodSource("provideScoreAndStatus")
+    @DisplayName("tests if the correct score is applied")
+    void scoreTest(Boolean isFinished, GameStatus gameStatus, Integer score, Integer tries) {
+        trainer.startNewRound("banaan");
+        trainer.getActiveRound().setAttempts(tries);
+        trainer.getActiveRound().setFinished(isFinished);
+        trainer.checkGameStatus(gameStatus);
+        assertEquals(score, trainer.getScore());
+    }
+
+    static Stream<Arguments> provideScoreAndStatus() {
+        return Stream.of(
+                Arguments.of(false, GameStatus.PLAYING, 0, 0),
+                Arguments.of(true, GameStatus.ELIMINATED, 0, 0),
+                Arguments.of(true, GameStatus.ROUND_WON, 35, 3),
+                Arguments.of(true, GameStatus.ROUND_WON, 40, 2)
+        );
+    }
+
+    @ParameterizedTest
     @MethodSource("provideRounds")
     @DisplayName("This checks the GameStatus")
-    void thisMethodDoesSomething(int tries, String attempt, GameStatus gameStatus) {
+    void checkGameStatus(int tries, String attempt, GameStatus gameStatus) {
         trainer.startNewRound("banaan");
         trainer.getActiveRound().setAttempts(tries);
         trainer.doAttempt(attempt);
         assertEquals(gameStatus, trainer.getGameStatus());
     }
 
-    @Test
-    @DisplayName("If the word is guessed correctly the score should be calculated")
-    void calculateScore() {
-        trainer.startNewRound("banaan");
-        trainer.doAttempt("banana");
-        trainer.getActiveRound().setAttempts(3);
-        trainer.calculateScore();
-        assertEquals(35, trainer.getScore());
-    }
-
-
-
     static Stream<Arguments> provideRounds() {
         return Stream.of(
                 Arguments.of(5, "banaan", GameStatus.ROUND_WON),
-
                 Arguments.of(1, "banana", GameStatus.PLAYING),
                 Arguments.of(2, "banden", GameStatus.PLAYING),
                 Arguments.of(3, "nasaal", GameStatus.PLAYING),
