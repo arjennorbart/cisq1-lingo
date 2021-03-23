@@ -68,7 +68,7 @@ public class Round implements Serializable {
     }
 
     public GameStatus finishedStatus() {
-        if (this.wordIsGuessed) {
+        if (Boolean.TRUE.equals(this.wordIsGuessed)) {
             this.isFinished = true;
             return GameStatus.ROUND_WON;
         }
