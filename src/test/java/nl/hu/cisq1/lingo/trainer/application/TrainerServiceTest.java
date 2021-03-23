@@ -13,7 +13,8 @@ import org.junit.jupiter.api.Test;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.*;
 
 class TrainerServiceTest {
@@ -41,7 +42,7 @@ class TrainerServiceTest {
         when(trainerRepository.save(isA(Trainer.class))).thenReturn(this.trainer);
         when(trainerRepository.findById(1L)).thenReturn(Optional.of(this.trainer));
         when(this.trainer.getId()).thenReturn(1L);
-        when(this.trainer.getActiveRound()).thenReturn(new Round());
+        when(this.trainer.getActiveRound()).thenReturn(new Round("kater"));
     }
 
     @Test
@@ -93,13 +94,16 @@ class TrainerServiceTest {
     @Test
     @DisplayName("Doing a valid attempt should not throw")
     void shouldNotThrowWhenAttemptIsValid() {
-        assertDoesNotThrow( () -> this.trainerService.doAttempt("ketel", 1L));
+        assertDoesNotThrow(() -> this.trainerService.doAttempt("ketel", 1L));
     }
 
     @Test
     @DisplayName("Starting a new round should return a game")
     void startingNewRoundShouldReturnAGame() {
+        when(this.trainer.getGameStatus()).thenReturn(GameStatus.ROUND_WON);
+        this.trainer.getActiveRound().setFinished(true);
         assertEquals(1L, this.trainerService.startNewRound(1L).getId());
-        verify(this.trainer, times(1)).getActiveRound();
+        verify(this.trainer, times(2)).getActiveRound();
+        verify(this.trainer, times(1)).startNewRound("kater");
     }
 }

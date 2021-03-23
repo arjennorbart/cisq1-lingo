@@ -26,7 +26,7 @@ public class Round implements Serializable {
     @Column
     private String wordToGuess;
     private int attempts;
-    private final int maxAttempts = 5;
+    private final int maxAttempts = 4;
     private boolean isFinished = false;
     private Boolean wordIsGuessed;
     private Hint hint;
