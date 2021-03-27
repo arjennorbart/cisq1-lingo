@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @Transactional
 @Import(CiTestConfiguration.class)
-public class TrainerServiceIntegrationTest {
+class TrainerServiceIntegrationTest {
 
     private Trainer trainer;
 
@@ -50,15 +50,17 @@ public class TrainerServiceIntegrationTest {
     @Test
     @DisplayName("Should throw when attempt is not a word that's in the database")
     void shouldThrowWhenAttemptIsNotACorrectWord() {
+        Long id = this.trainer.getId();
         assertThrows(InvalidWordException.class,
-                () -> this.trainerService.doAttempt("aaaaa", this.trainer.getId()));
+                () -> this.trainerService.doAttempt("aaaaa", id));
     }
 
     @Test
     @DisplayName("Should throw when attempt is not the correct length")
     void shouldThrowWhenAttemptLengthIsIncorrect() {
+        Long id = this.trainer.getId();
         assertThrows(InvalidAttemptLengthException.class,
-                () -> this.trainerService.doAttempt("oranje", this.trainer.getId()));
+                () -> this.trainerService.doAttempt("oranje", id));
     }
 
     @Test
