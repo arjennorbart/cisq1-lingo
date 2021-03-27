@@ -26,7 +26,7 @@ public class Round implements Serializable {
     @Column
     private String wordToGuess;
     private int attempts;
-    private final int maxAttempts = 5;
+    private final int maxAttempts = 4;
     private boolean isFinished = false;
     private Boolean wordIsGuessed;
     private Hint hint;
@@ -56,7 +56,7 @@ public class Round implements Serializable {
 
     //Generates a List with marks from the attempt and provides feedback and a hint.
     public GameStatus doAttempt(String attempt) {
-        GameStatus gameStatus = GameStatus.PLAYING;
+        GameStatus gameStatus;
         List<Mark> marks = this.validator.generateMarks(this.wordToGuess, attempt);
         Feedback feedback = new Feedback(attempt, marks);
         this.wordIsGuessed = feedback.isWordGuessed();
@@ -68,7 +68,7 @@ public class Round implements Serializable {
     }
 
     public GameStatus finishedStatus() {
-        if (this.wordIsGuessed) {
+        if (Boolean.TRUE.equals(this.wordIsGuessed)) {
             this.isFinished = true;
             return GameStatus.ROUND_WON;
         }

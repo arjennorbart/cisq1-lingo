@@ -26,7 +26,7 @@ public class Feedback implements Serializable {
     private Long id;
     private String attempt;
 
-    @Transient
+    @ElementCollection
     private List<Mark> marks;
 
     public Feedback() {

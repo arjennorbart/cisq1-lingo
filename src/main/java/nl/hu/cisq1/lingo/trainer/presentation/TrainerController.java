@@ -23,6 +23,7 @@ public class TrainerController {
                 trainer.getScore(),
                 trainer.getActiveRound().getAttempts(),
                 trainer.getActiveRound().getHint(),
+                trainer.getActiveRound().getFeedbackList(),
                 trainer.getActiveRound().displayWordToPlayer(),
                 trainer.getGameStatus()
         );
@@ -36,6 +37,7 @@ public class TrainerController {
                 trainer.getScore(),
                 trainer.getActiveRound().getAttempts(),
                 trainer.getActiveRound().getHint(),
+                trainer.getActiveRound().getFeedbackList(),
                 trainer.getActiveRound().displayWordToPlayer(),
                 trainer.getGameStatus()
         );
@@ -49,6 +51,7 @@ public class TrainerController {
                 trainer.getScore(),
                 trainer.getActiveRound().getAttempts(),
                 trainer.getActiveRound().getHint(),
+                trainer.getActiveRound().getFeedbackList(),
                 trainer.getActiveRound().displayWordToPlayer(),
                 trainer.getGameStatus()
         );
