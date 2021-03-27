@@ -3,6 +3,7 @@ package nl.hu.cisq1.lingo.trainer.presentation;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nl.hu.cisq1.lingo.CiTestConfiguration;
 import nl.hu.cisq1.lingo.trainer.application.TrainerService;
+import nl.hu.cisq1.lingo.trainer.application.exception.GameDoesNotExistException;
 import nl.hu.cisq1.lingo.trainer.data.TrainerRepository;
 import nl.hu.cisq1.lingo.trainer.domain.Trainer;
 import nl.hu.cisq1.lingo.trainer.domain.factory.TrainerFactory;
@@ -31,6 +32,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Import(CiTestConfiguration.class)
 class TrainerControllerIntegrationTest {
     private static Long gameId;
+    private static Long invalidId = 2L;
+
     private Trainer trainer;
     private AttemptDTO correctAttemptDTO;
     private AttemptDTO incorrectAttemptDTO;
@@ -71,6 +74,29 @@ class TrainerControllerIntegrationTest {
     void startNewGameShouldBeSuccessful() throws Exception {
         RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/trainer/startNewGame?id=" + gameId);
         this.performSuccessfulRequest(requestBuilder);
+    }
+
+    @Test
+    @DisplayName("Starting a game with non existing id should be bad request")
+    void startNewGameWithNonExistingIdShouldFail() throws Exception {
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/trainer/startNewGame?id=" + invalidId);
+        when(this.trainerService.startGame(invalidId)).thenThrow(GameDoesNotExistException.class);
+        this.performBadRequest(requestBuilder);
+    }
+
+    @Test
+    @DisplayName("Starting new round successfully")
+    void startingNewRoundSuccessfully() throws Exception {
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/trainer/startNewRound?gameId=" + gameId);
+        this.performSuccessfulRequest(requestBuilder);
+    }
+
+    @Test
+    @DisplayName("Starting a round with non existing id should be bad request")
+    void startNewRoundWithNonExistingIdShouldFail() throws Exception {
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/trainer/startNewRound?gameId=" + invalidId);
+        when(this.trainerService.startNewRound(invalidId)).thenThrow(GameDoesNotExistException.class);
+        this.performBadRequest(requestBuilder);
     }
 
     @Test
