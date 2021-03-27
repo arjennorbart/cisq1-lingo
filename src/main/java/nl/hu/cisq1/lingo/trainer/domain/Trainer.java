@@ -15,7 +15,7 @@ import java.util.List;
 public class Trainer implements Serializable {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
     private int score = 0;

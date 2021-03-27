@@ -1,5 +1,6 @@
 package nl.hu.cisq1.lingo.trainer.application;
 
+import nl.hu.cisq1.lingo.trainer.application.exception.GameDoesNotExistException;
 import nl.hu.cisq1.lingo.trainer.data.TrainerRepository;
 import nl.hu.cisq1.lingo.trainer.domain.GameStatus;
 import nl.hu.cisq1.lingo.trainer.domain.Round;
@@ -67,7 +68,8 @@ class TrainerServiceTest {
     @Test
     @DisplayName("When starting an existing game which is empty, a new game should be started")
     void startNewGameWhenExistingGameIsEmpty() {
-        assertEquals(1L, this.trainerService.startGame(2L).getId());
+        assertThrows(GameDoesNotExistException.class,
+                () -> this.trainerService.startGame(2L));
     }
 
     @Test
@@ -98,6 +100,13 @@ class TrainerServiceTest {
     }
 
     @Test
+    @DisplayName("Doing an attempt on a non existing game should throw")
+    void shouldThrowWhileDoingAnAttemptOnNonExistingGame() {
+        assertThrows(GameDoesNotExistException.class,
+                () -> this.trainerService.doAttempt("ketel",2L));
+    }
+
+    @Test
     @DisplayName("Starting a new round should return a game")
     void startingNewRoundShouldReturnAGame() {
         when(this.trainer.getGameStatus()).thenReturn(GameStatus.ROUND_WON);
@@ -105,5 +114,19 @@ class TrainerServiceTest {
         assertEquals(1L, this.trainerService.startNewRound(1L).getId());
         verify(this.trainer, times(2)).getActiveRound();
         verify(this.trainer, times(1)).startNewRound("kater");
+    }
+
+    @Test
+    @DisplayName("Starting new round when current round is not finished, should not start a new round")
+    void startingNewNotPossibleWhenCurrentRoundIsActive() {
+        assertEquals(1L, this.trainerService.startNewRound(1L).getId());
+    }
+
+    @Test
+    @DisplayName("Starting new round when GameStatus is eliminated but round is finished, should not start a new round")
+    void startingNewNotPossibleWhenGameStatusIsEliminatedAndRoundIsFinished() {
+        when(this.trainer.getGameStatus()).thenReturn(GameStatus.ELIMINATED);
+        this.trainer.getActiveRound().setFinished(true);
+        assertEquals(1L, this.trainerService.startNewRound(1L).getId());
     }
 }

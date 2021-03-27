@@ -1,5 +1,6 @@
 package nl.hu.cisq1.lingo.trainer.application;
 
+import nl.hu.cisq1.lingo.trainer.application.exception.GameDoesNotExistException;
 import nl.hu.cisq1.lingo.trainer.data.TrainerRepository;
 import nl.hu.cisq1.lingo.trainer.domain.GameStatus;
 import nl.hu.cisq1.lingo.trainer.domain.Trainer;
@@ -28,7 +29,7 @@ public class TrainerService {
             return startNewGame();
         Optional<Trainer> existingGame = this.trainerRepository.findById(id);
         if (existingGame.isEmpty())
-            return startNewGame();
+            throw new GameDoesNotExistException("Game with this id does not exist");
         return existingGame.get();
     }
 
@@ -60,6 +61,8 @@ public class TrainerService {
     }
 
     public Trainer getTrainerById(Long id) {
-        return trainerRepository.findById(id).orElseThrow();
+        return trainerRepository.findById(id).orElseThrow(
+                () -> new GameDoesNotExistException("Game with this id does not exist")
+        );
     }
 }
