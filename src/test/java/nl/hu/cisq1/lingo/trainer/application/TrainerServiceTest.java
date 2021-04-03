@@ -1,11 +1,11 @@
 package nl.hu.cisq1.lingo.trainer.application;
 
 import nl.hu.cisq1.lingo.trainer.application.exception.GameDoesNotExistException;
-import nl.hu.cisq1.lingo.trainer.data.TrainerRepository;
+import nl.hu.cisq1.lingo.trainer.data.GameRepository;
+import nl.hu.cisq1.lingo.trainer.domain.Game;
 import nl.hu.cisq1.lingo.trainer.domain.GameStatus;
 import nl.hu.cisq1.lingo.trainer.domain.Round;
-import nl.hu.cisq1.lingo.trainer.domain.Trainer;
-import nl.hu.cisq1.lingo.trainer.domain.factory.TrainerFactory;
+import nl.hu.cisq1.lingo.trainer.domain.factory.GameFactory;
 import nl.hu.cisq1.lingo.words.application.WordService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -26,37 +26,37 @@ class TrainerServiceTest {
     //mock: heeft methoden die er nog op uitgevoerd kunnen worden -> object manipulatie
 
     private TrainerService trainerService;
-    private Trainer trainer;
+    private Game game;
     private WordService wordService;
 
     @BeforeEach
     void initialize() {
-        TrainerFactory factory = mock(TrainerFactory.class);
-        TrainerRepository trainerRepository = mock(TrainerRepository.class);
+        GameFactory factory = mock(GameFactory.class);
+        GameRepository gameRepository = mock(GameRepository.class);
 
         this.wordService = mock(WordService.class);
-        this.trainer = mock(Trainer.class);
-        this.trainerService = new TrainerService(this.wordService, trainerRepository, factory);
+        this.game = mock(Game.class);
+        this.trainerService = new TrainerService(this.wordService, gameRepository, factory);
 
-        when(factory.createTrainer()).thenReturn(this.trainer);
+        when(factory.createGame()).thenReturn(this.game);
         when(this.wordService.provideRandomWord(anyInt())).thenReturn("kater");
-        when(trainerRepository.save(isA(Trainer.class))).thenReturn(this.trainer);
-        when(trainerRepository.findById(1L)).thenReturn(Optional.of(this.trainer));
-        when(this.trainer.getId()).thenReturn(1L);
-        when(this.trainer.getActiveRound()).thenReturn(new Round("kater"));
+        when(gameRepository.save(isA(Game.class))).thenReturn(this.game);
+        when(gameRepository.findById(1L)).thenReturn(Optional.of(this.game));
+        when(this.game.getId()).thenReturn(1L);
+        when(this.game.getActiveRound()).thenReturn(new Round("kater"));
     }
 
     @Test
     @DisplayName("should return a new game when no parameter is given to startNewGame method")
     void startNewGame() {
         assertNotNull(this.trainerService.startGame(null));
-        verify(this.trainer, times(1)).startNewRound("kater");
+        verify(this.game, times(1)).startNewRound("kater");
     }
 
     @Test
     @DisplayName("should return the game with id 1")
     void loadOngoingPreviousGame() {
-        assertEquals(1L, this.trainer.getId());
+        assertEquals(1L, this.game.getId());
     }
 
     @Test
@@ -82,14 +82,14 @@ class TrainerServiceTest {
     @DisplayName("Should start new round when word is guessed")
     void startNewRoundWhenWordIsGuessed() {
         assertEquals(1L, this.trainerService.doAttempt("kater", 1L).getId());
-        verify(this.trainer, times(1)).doAttempt("kater");
+        verify(this.game, times(1)).doAttempt("kater");
         verify(this.wordService, times(1)).findWordByString("kater");
     }
 
     @Test
     @DisplayName("Doing a valid attempt should not throw")
     void shouldReturnAGameWhenRoundIsFinished() {
-        this.trainer.getActiveRound().setFinished(true);
+        this.game.getActiveRound().setFinished(true);
         assertEquals(1L, this.trainerService.doAttempt("ketel", 1L).getId());
     }
 
@@ -109,11 +109,11 @@ class TrainerServiceTest {
     @Test
     @DisplayName("Starting a new round should return a game")
     void startingNewRoundShouldReturnAGame() {
-        when(this.trainer.getGameStatus()).thenReturn(GameStatus.ROUND_WON);
-        this.trainer.getActiveRound().setFinished(true);
+        when(this.game.getGameStatus()).thenReturn(GameStatus.ROUND_WON);
+        this.game.getActiveRound().setFinished(true);
         assertEquals(1L, this.trainerService.startNewRound(1L).getId());
-        verify(this.trainer, times(2)).getActiveRound();
-        verify(this.trainer, times(1)).startNewRound("kater");
+        verify(this.game, times(2)).getActiveRound();
+        verify(this.game, times(1)).startNewRound("kater");
     }
 
     @Test
@@ -125,8 +125,8 @@ class TrainerServiceTest {
     @Test
     @DisplayName("Starting new round when GameStatus is eliminated but round is finished, should not start a new round")
     void startingNewNotPossibleWhenGameStatusIsEliminatedAndRoundIsFinished() {
-        when(this.trainer.getGameStatus()).thenReturn(GameStatus.ELIMINATED);
-        this.trainer.getActiveRound().setFinished(true);
+        when(this.game.getGameStatus()).thenReturn(GameStatus.ELIMINATED);
+        this.game.getActiveRound().setFinished(true);
         assertEquals(1L, this.trainerService.startNewRound(1L).getId());
     }
 }

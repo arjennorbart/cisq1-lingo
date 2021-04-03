@@ -1,18 +1,15 @@
 package nl.hu.cisq1.lingo.trainer.domain;
 
 import lombok.Getter;
-import lombok.Setter;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "trainer")
 @Getter
-@Setter
-public class Trainer implements Serializable {
+public class Game {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,7 +24,7 @@ public class Trainer implements Serializable {
     @OneToMany(cascade = CascadeType.ALL)
     private final List<Round> previousRounds;
 
-    public Trainer() {
+    public Game() {
         this.previousRounds = new ArrayList<>();
     }
 
