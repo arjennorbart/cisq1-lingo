@@ -7,7 +7,10 @@ import nl.hu.cisq1.lingo.trainer.domain.exception.InvalidAttemptLengthException;
 import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor

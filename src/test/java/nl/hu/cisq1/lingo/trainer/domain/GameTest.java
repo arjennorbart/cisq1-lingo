@@ -10,24 +10,24 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class TrainerTest {
+class GameTest {
 
-    private Trainer trainer;
+    private Game game;
 
     @BeforeEach
     void initialize() {
-        this.trainer = new Trainer();
+        this.game = new Game();
     }
 
     @ParameterizedTest
     @MethodSource("provideScoreAndStatus")
     @DisplayName("tests if the correct score is applied")
     void scoreTest(Boolean isFinished, GameStatus gameStatus, Integer score, Integer tries) {
-        trainer.startNewRound("banaan");
-        trainer.getActiveRound().setAttempts(tries);
-        trainer.getActiveRound().setFinished(isFinished);
-        trainer.checkGameStatus(gameStatus);
-        assertEquals(score, trainer.getScore());
+        game.startNewRound("banaan");
+        game.getActiveRound().setAttempts(tries);
+        game.getActiveRound().setFinished(isFinished);
+        game.checkGameStatus(gameStatus);
+        assertEquals(score, game.getScore());
     }
 
     static Stream<Arguments> provideScoreAndStatus() {
@@ -43,10 +43,10 @@ class TrainerTest {
     @MethodSource("provideRounds")
     @DisplayName("This checks the GameStatus")
     void checkGameStatus(int tries, String attempt, GameStatus gameStatus) {
-        trainer.startNewRound("banaan");
-        trainer.getActiveRound().setAttempts(tries);
-        trainer.doAttempt(attempt);
-        assertEquals(gameStatus, trainer.getGameStatus());
+        game.startNewRound("banaan");
+        game.getActiveRound().setAttempts(tries);
+        game.doAttempt(attempt);
+        assertEquals(gameStatus, game.getGameStatus());
     }
 
     static Stream<Arguments> provideRounds() {
@@ -64,8 +64,8 @@ class TrainerTest {
     @MethodSource("provideWordLength")
     @DisplayName("If the word is guessed correctly")
     void provideLengthNextWordToGuess(int wordLength, String word) {
-        trainer.startNewRound(word);
-        assertEquals(wordLength, trainer.provideLengthNextWordToGuess());
+        game.startNewRound(word);
+        assertEquals(wordLength, game.provideLengthNextWordToGuess());
     }
 
     static Stream<Arguments> provideWordLength() {

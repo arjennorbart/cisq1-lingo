@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
-import nl.hu.cisq1.lingo.trainer.domain.utils.Utils;
 
 import java.io.Serializable;
 import java.util.ArrayList;

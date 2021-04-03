@@ -3,7 +3,7 @@ package nl.hu.cisq1.lingo.trainer.domain.utils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class UtilsTest {
 

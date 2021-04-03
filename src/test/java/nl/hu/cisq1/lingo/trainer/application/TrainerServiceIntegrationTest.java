@@ -1,10 +1,10 @@
 package nl.hu.cisq1.lingo.trainer.application;
 
 import nl.hu.cisq1.lingo.CiTestConfiguration;
-import nl.hu.cisq1.lingo.trainer.data.TrainerRepository;
-import nl.hu.cisq1.lingo.trainer.domain.Trainer;
+import nl.hu.cisq1.lingo.trainer.data.GameRepository;
+import nl.hu.cisq1.lingo.trainer.domain.Game;
 import nl.hu.cisq1.lingo.trainer.domain.exception.InvalidAttemptLengthException;
-import nl.hu.cisq1.lingo.trainer.domain.factory.TrainerFactory;
+import nl.hu.cisq1.lingo.trainer.domain.factory.GameFactory;
 import nl.hu.cisq1.lingo.words.domain.exception.InvalidWordException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -23,59 +23,59 @@ import static org.junit.jupiter.api.Assertions.*;
 @Import(CiTestConfiguration.class)
 class TrainerServiceIntegrationTest {
 
-    private Trainer trainer;
+    private Game game;
 
     @Autowired
-    private TrainerService trainerService;
+    private TrainerService service;
 
     @Autowired
-    private TrainerRepository repository;
+    private GameRepository repository;
 
     @Autowired
-    private TrainerFactory trainerFactory;
+    private GameFactory gameFactory;
 
     @BeforeEach
     void initialize() {
-        this.trainer = trainerFactory.createTrainer();
-        this.trainer.startNewRound("pizza"); //from WordTestDataFixtures
-        this.repository.save(this.trainer);
+        this.game = gameFactory.createGame();
+        this.game.startNewRound("pizza"); //from WordTestDataFixtures
+        this.repository.save(this.game);
     }
 
     @Test
     @DisplayName("New game should not be empty")
     void startingNewGameIsNotNull() {
-        assertNotNull(this.trainerService.startGame(null));
+        assertNotNull(this.service.startGame(null));
     }
 
     @Test
     @DisplayName("Should throw when attempt is not a word that's in the database")
     void shouldThrowWhenAttemptIsNotACorrectWord() {
-        Long id = this.trainer.getId();
+        Long id = this.game.getId();
         assertThrows(InvalidWordException.class,
-                () -> this.trainerService.doAttempt("aaaaa", id));
+                () -> this.service.doAttempt("aaaaa", id));
     }
 
     @Test
     @DisplayName("Should throw when attempt is not the correct length")
     void shouldThrowWhenAttemptLengthIsIncorrect() {
-        Long id = this.trainer.getId();
+        Long id = this.game.getId();
         assertThrows(InvalidAttemptLengthException.class,
-                () -> this.trainerService.doAttempt("oranje", id));
+                () -> this.service.doAttempt("oranje", id));
     }
 
     @Test
     @DisplayName("Should find a game by id")
     void findGameById() {
-        assertNotNull(this.trainerService.getTrainerById(this.trainer.getId()));
+        assertNotNull(this.service.getGameById(this.game.getId()));
     }
 
     @Test
     @DisplayName("Word is revealed when round is finished")
     void revealWordWhenRoundIsFinished() {
-        this.trainer.getActiveRound().setFinished(true);
+        this.game.getActiveRound().setFinished(true);
         assertEquals("pizza",
-                this.trainerService.getTrainerById(
-                        this.trainer.getId())
+                this.service.getGameById(
+                        this.game.getId())
                         .getActiveRound()
                         .displayWordToPlayer()
         );

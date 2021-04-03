@@ -1,23 +1,18 @@
 package nl.hu.cisq1.lingo.trainer.domain;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 import nl.hu.cisq1.lingo.trainer.domain.utils.Utils;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "round")
-@EqualsAndHashCode
 @Getter
 @Setter
-@ToString
-public class Round implements Serializable {
+public class Round {
 
     @Id
     @GeneratedValue
@@ -71,8 +66,7 @@ public class Round implements Serializable {
         if (Boolean.TRUE.equals(this.wordIsGuessed)) {
             this.isFinished = true;
             return GameStatus.ROUND_WON;
-        }
-        else if  (this.attempts >= this.maxAttempts) {
+        } else if (this.attempts >= this.maxAttempts) {
             this.isFinished = true;
             return GameStatus.ELIMINATED;
         }
