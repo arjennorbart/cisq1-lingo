@@ -18,22 +18,36 @@ Spring Security. We maken in dit project geen gebruik van authenticatie en autor
 zijn kunnen we Spring Security hiervoor gebruiken.
 
 ### Counter-measures
-We maken gebruik van een boel externe dependencies in ons project. Belangrijk is om te zorgen om altijd up to date te 
+We maken gebruik van een boel externe dependencies in ons project. Belangrijk is om te zorgen om altijd up-to-date te 
 zijn. Hiervoor gebruiken we Dependabot.
 
 ## A2:2017 Broken Authentication
 
 ### Description
+Broken authentication is wanneer de aanvaller één of meerdere probeert over te nemen, waardoor de aanvaller dezelfde 
+privileges heeft als het account die is overgenomen.
 
 ### Risk
+Omdat we, zoals eerder gezegd, geen gebruik maken van authenticatie is er momenteel geen risico in dit project.
+
 
 ### Counter-measures
+Mochten wel gebruik maken van authenticatie, zorgen we voor wachtwoord vereisten 
+(minimaal zo lang en verschillende tekens). Tevens gebruiken we absoluut geen default credentials (admin admin). Dit 
+moet niet mogelijk zijn om in te stellen.
 
 ## A3:2017 Sensitive Data Exposure
 
+
 ### Description
+Sensitive data exposure is wanneer gevoelige informatie (wachtwoorden, creditcard gegevens enz.) wordt vrijgegeven, door
+bijvoorbeeld een hacker die een systeem binnen komt en de data steelt. Dit is een belangrijk en veelvoorkomend probleem.
 
 ### Risk
+Omdat we in dit project geen gebruik maken van authenticatie en autorisatie is er momenteel geen risico hiervoor.
+Als we dit wel zouden implementeren, kunnen gebruikers inloggen met hun wachtwoord. Dit is uiteraard gevoelige data
+waar we zorgvuldig mee om dienen te gaan.
 
 ### Counter-measures
-
+Als we met wachtwoorden zouden gaan werken zouden we deze hashen. Niet encrypten, omdat hashing geschikter is voor
+wachtwoorden (wachtwoord goedkeuren, zonder het wachtwoord te laten zien).
