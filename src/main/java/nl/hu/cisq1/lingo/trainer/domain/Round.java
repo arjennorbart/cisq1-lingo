@@ -19,9 +19,9 @@ public class Round {
     private Long id;
 
     @Column
+    private static final int MAX_ATTEMPTS = 4;
     private String wordToGuess;
     private int attempts;
-    private final int maxAttempts = 4;
     private boolean isFinished = false;
     private Boolean wordIsGuessed;
     private Hint hint;
@@ -66,7 +66,7 @@ public class Round {
         if (Boolean.TRUE.equals(this.wordIsGuessed)) {
             this.isFinished = true;
             return GameStatus.ROUND_WON;
-        } else if (this.attempts >= this.maxAttempts) {
+        } else if (this.attempts >= MAX_ATTEMPTS) {
             this.isFinished = true;
             return GameStatus.ELIMINATED;
         }

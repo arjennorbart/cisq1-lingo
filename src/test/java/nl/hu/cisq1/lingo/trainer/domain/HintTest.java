@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class HintTest {
+class HintTest {
 
     @Test
     @DisplayName("Previous hint is correctly replaced for a new hint")
