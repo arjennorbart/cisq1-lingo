@@ -45,7 +45,7 @@ public class Round {
         char[] wordToGuessArray = wordToGuess.toCharArray();
         startingHintList.add(wordToGuessArray[0]);
         for (int i = 0; i < wordToGuessArray.length - 1; i++)
-            startingHintList.add(Utils.dot());
+            startingHintList.add(Utils.DOT);
         this.hint = new Hint(startingHintList);
     }
 

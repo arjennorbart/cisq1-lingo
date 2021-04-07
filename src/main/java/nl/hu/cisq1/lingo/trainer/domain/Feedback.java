@@ -7,6 +7,7 @@ import nl.hu.cisq1.lingo.trainer.domain.exception.InvalidAttemptLengthException;
 import nl.hu.cisq1.lingo.trainer.domain.utils.Utils;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,15 +44,15 @@ public class Feedback {
     //Makes a new hint from the attempt Marks from the new attempt and then calls Hint.replaceHint() to update the hint.
     public Hint giveHint(Hint previousHint, String wordToGuess) {
         char[] wordToGuessArray = wordToGuess.toCharArray();
-        StringBuilder newHint = new StringBuilder();
+        List<Character> newHint = new ArrayList<>();
         for (int i = 0; i < this.marks.size(); i++) {
             if (this.marks.get(i).equals(Mark.CORRECT))
-                newHint.append(wordToGuessArray[i]);
+                newHint.add(wordToGuessArray[i]);
             else if (this.marks.get(i).equals(Mark.PRESENT))
-                newHint.append(Utils.plus());
-            else newHint.append(Utils.dot());
+                newHint.add(Utils.PLUS);
+            else newHint.add(Utils.DOT);
         }
-        previousHint.replaceHint(newHint.toString().chars().mapToObj(c -> (char) c).collect(Collectors.toList()));
+        previousHint.replaceHint(newHint);
         return previousHint;
     }
 }
