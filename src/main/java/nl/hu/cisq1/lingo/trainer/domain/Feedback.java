@@ -9,7 +9,6 @@ import nl.hu.cisq1.lingo.trainer.domain.utils.Utils;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "feedback")
