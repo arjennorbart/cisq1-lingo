@@ -49,9 +49,9 @@ public class AttemptValidator implements Serializable {
                 if (wordToGuess.contains(String.valueOf(attemptArray[i]))) {
                     if (map.get(attemptArray[i]) > occurrenceInWordToGuess) {
                         marks.set(i, Mark.ABSENT);
-                        continue;
+                    } else {
+                        marks.set(i, Mark.PRESENT);
                     }
-                    marks.set(i, Mark.PRESENT);
                     continue;
                 }
                 marks.set(i, Mark.ABSENT);
