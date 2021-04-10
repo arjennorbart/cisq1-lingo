@@ -34,10 +34,12 @@ public class AttemptValidator implements Serializable {
             if (wordToGuessArray[o] == attemptArray[o]) {
                 marks.add(Mark.CORRECT);
                 correctChars.add(attemptArray[o]);
-            }
-            else marks.add(Mark.INVALID);
+            } else marks.add(Mark.INVALID);
         }
+        return this.addCorrectCharToList(marks, attemptArray, wordToGuess, correctChars, map);
+    }
 
+    private List<Mark> addCorrectCharToList(List<Mark> marks, char[] attemptArray, String wordToGuess, List<Character> correctChars, HashMap<Character, Integer> map) {
         for (int i = 0; i < attemptArray.length; i++) {
             if (marks.get(i) != Mark.CORRECT) {
                 int occurrenceInWordToGuess = StringUtils.countOccurrencesOf(wordToGuess, String.valueOf(attemptArray[i]));
