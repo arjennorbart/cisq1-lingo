@@ -3,17 +3,17 @@
 ## A1:2017 Injection
 
 ### Description
-Als we specifiek kijken naar SQL Injection, betekend dit dat je een gedeelte van een query kan invoeren 
-op een plek waar het eigenlijk niet hoort, zodat je informatie uit de database kan krijgen, 
+Injection is wanneer untrusted input wordt uitgevoerd. In het geval van SQL Injection geeft de aanvaller input
+mee, welke niet gevalideerd wordt, zodat hij informatie uit de database kan krijgen, 
 wat natuurlijk niet de bedoeling is. Het gaat dan fout als je in je code string concatenatie doet en de meegegeven 
 String (van de gebruiker) in een query gaat verwerken en het resultaat teruggeeft. 
 
 ### Risk
-Het risico is laag, omdat ik alleen de findById() gebruik in de JPA repository. Hibernate is sql injection proof.
+Het risico is laag, omdat ik alleen de findById() gebruik in de JPA repository. Hibernate is SQL Injection proof.
 Als er een custom query geschreven wordt, zorg dan dat je gebruik maakt van de PreparedStatement, 
-welke ook sql injection voorkomt.
+welke ook SQL Injection voorkomt.
 
-Authenticatie kan omzeild worden door sql injection. Echter wordt authenticatie en autorisatie afgevangen door 
+Authenticatie kan omzeild worden door SQL Injection. Echter wordt authenticatie en autorisatie afgevangen door 
 Spring Security. We maken in dit project geen gebruik van authenticatie en autorisatie, maar mocht dit wel het geval 
 zijn kunnen we Spring Security hiervoor gebruiken.
 
@@ -24,12 +24,11 @@ zijn. Hiervoor gebruiken we Dependabot.
 ## A2:2017 Broken Authentication
 
 ### Description
-Broken authentication is wanneer de aanvaller één of meerdere probeert over te nemen, waardoor de aanvaller dezelfde 
-privileges heeft als het account die is overgenomen.
+Broken authentication is wanneer de aanvaller één of meerdere accounts probeert over te nemen, waardoor de aanvaller 
+dezelfde privileges heeft als het account die is overgenomen.
 
 ### Risk
 Omdat we, zoals eerder gezegd, geen gebruik maken van authenticatie is er momenteel geen risico in dit project.
-
 
 ### Counter-measures
 Mochten wel gebruik maken van authenticatie, zorgen we voor wachtwoord vereisten 
@@ -37,7 +36,6 @@ Mochten wel gebruik maken van authenticatie, zorgen we voor wachtwoord vereisten
 moet niet mogelijk zijn om in te stellen.
 
 ## A3:2017 Sensitive Data Exposure
-
 
 ### Description
 Sensitive data exposure is wanneer gevoelige informatie (wachtwoorden, creditcard gegevens enz.) wordt vrijgegeven, door
